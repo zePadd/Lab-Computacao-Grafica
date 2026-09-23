@@ -40,6 +40,16 @@ java Main
 
 O programa vai abrir caixas de diálogo pedindo os dados e, no final, ocupar a tela inteira para mostrar o pixel. Para fechar a janela de tela cheia, use `Alt+F4` (Windows/Linux) ou feche pela janela de lupa.
 
+> [⚠️!WARNING]
+> **Escala do Windows (DPI).** Em muitos notebooks o Windows vem com a escala padrão em **125%** (ou mais). Nesse caso, o Java (9+) passa a enxergar a resolução *lógica* da tela, e não a física: numa tela de **1920x1080** com 125%, o programa vai detectar algo como **1536x864**.
+>
+> Isso afeta o resultado do laboratório:
+> - as coordenadas de dispositivo (`DC_x`, `DC_y`) passam a ser calculadas sobre a resolução errada;
+> - cada pixel da imagem é ampliado pelo Windows para ~1,25 pixel físico, então o ponto pode não acender exatamente **um** pixel real (fere o Requisito 4).
+>
+> **Antes de rodar no Windows, ajuste a escala para 100%:** `Configurações → Sistema → Tela → Escala = 100%`.
+>
+
 ## Como cada requisito do enunciado foi atendido
 
 - **Requisito 1** (janela do mundo definida pelo usuário): `UserInputReader.lerJanelaDeMundo()`.
