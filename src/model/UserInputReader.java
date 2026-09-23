@@ -1,3 +1,7 @@
+package model;
+
+import ui.EntradaUsuario;
+
 import javax.swing.JOptionPane;
 
 /**

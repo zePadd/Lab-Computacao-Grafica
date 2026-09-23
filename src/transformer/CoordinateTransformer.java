@@ -1,3 +1,7 @@
+package transformer;
+
+import model.*;
+
 /**
  * Implementa os quatro procedimentos de transformacao de coordenadas
  * pedidos no exercicio da Aula G2: user_to_ndc, ndc_to_user, ndc_to_dc e

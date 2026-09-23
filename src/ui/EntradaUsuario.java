@@ -1,3 +1,7 @@
+package ui;
+
+import model.*;
+
 /**
  * Agrupa os dois dados que o usuario fornece no requisito 1 do
  * laboratorio: a janela de mundo e o ponto de mundo a ser transformado.

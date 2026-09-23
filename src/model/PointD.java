@@ -1,3 +1,5 @@
+package model;
+
 /**
  * Representa um ponto bidimensional com coordenadas em ponto flutuante
  * (double). E usado tanto para coordenadas de mundo quanto para coordenadas

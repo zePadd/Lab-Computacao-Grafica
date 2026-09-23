@@ -1,3 +1,5 @@
+package model;
+
 /**
  * Representa os dois cenarios de coordenadas normalizadas de dispositivo
  * (NDC) exigidos pelo laboratorio: o intervalo [0,1] x [0,1] e o intervalo

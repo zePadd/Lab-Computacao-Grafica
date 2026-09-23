@@ -1,3 +1,5 @@
+package model;
+
 /**
  * Representa um ponto em coordenadas de dispositivo (DC): um par de
  * indices inteiros de pixel, dcx e dcy, cada um variando de 0 ate

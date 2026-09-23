@@ -1,3 +1,5 @@
+package model;
+
 /**
  * Representa a janela de mundo definida pelo usuario: os limites minimo e
  * maximo, em cada eixo, da regiao de coordenadas de mundo que sera mapeada
