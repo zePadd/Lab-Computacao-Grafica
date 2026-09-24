@@ -44,7 +44,7 @@ public final class PixelRenderer {
      * @param y a linha do pixel (coordenada vertical de dispositivo)
      * @param cor a cor a ser atribuida ao pixel (ex: 0x00FF00)
      */
-    public static void drawPixel(BufferedImage imagem, int x, int y, Color cor) {
+    public static void ligaPixel(BufferedImage imagem, int x, int y, Color cor) {
         imagem.setRGB(x, y, cor.getRGB());
     }
 
@@ -52,7 +52,7 @@ public final class PixelRenderer {
      * Abre uma janela do tamanho exato da tela, identica a um display
      * comum: sem moldura, sem reticulados, com fundo totalmente limpo
      * (uma unica cor solida), e acende um unico pixel na posicao
-     * informada usando {@link #drawPixel}. Nenhum outro elemento visual
+     * informada usando {@link #ligaPixel}. Nenhum outro elemento visual
      * e desenhado, conforme exigido pelo professor.
      *
      * @param pontoAtivo o ponto em coordenadas de dispositivo a ser aceso
@@ -83,7 +83,7 @@ public final class PixelRenderer {
 
         // Acende o pixel ativo, ja depois de todas as transformacoes de
         // coordenadas terem sido calculadas em Main.
-        drawPixel(imagem, pontoAtivo.getDcx(), pontoAtivo.getDcy(), corDoPixel);
+        ligaPixel(imagem, pontoAtivo.getDcx(), pontoAtivo.getDcy(), corDoPixel);
 
         exibirJanelaComImagem(imagem);
     }
