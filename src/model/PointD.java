@@ -3,7 +3,7 @@ package model;
 /**
  * Representa um ponto bidimensional com coordenadas em ponto flutuante
  * (double). E usado tanto para coordenadas de mundo quanto para coordenadas
- * NDC, ja que as duas sao continuas.
+ * NDC, já que as duas são continuas.
  *
  * @author Gabriela 
  * @date 22/09/2026

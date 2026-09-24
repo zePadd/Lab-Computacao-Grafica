@@ -3,14 +3,31 @@ package ui;
 import model.*;
 import transformer.*;
 
+/*
+> AWT (Abstract Window Toolkit)
+é o pacote original do Java (existe desde a versão 1.0) voltado para a criação de
+interfaces gráficas de usuário para aplicações de desktop
+
+> A ideia central do AWT é fazer uma ponte direta com os componentes gráficos nativos do sistema operacional:
+quando você cria um botão AWT no Windows, por baixo dos panos ele é literalmente um botão do Windows;
+no Linux, é um botão do toolkit gráfico do Linux
+
+> Ela foi a precursora do Java Swing (mais leve e com mais recursos) inclusive, que só veio na versão 1.2 do Java
+
+> Qualque objeto de interface é chamado de 'Component'
+ */
 import java.awt.*;
 import java.awt.image.*;
 import javax.swing.*;
 
 /**
- * Responsavel por descobrir a resolução real do dispositivo e por acender
+ * Responsável por descobrir a resolução real do dispositivo e por acender
  * exatamente um pixel (com cor verde) na posição calculada.
- * Todo o desenho visual (a saída do programa) acontece aqui.
+ * Todo o desenho visual (a saída do programa) acontece aqui. O Uso das bibliotecas segue assim:
+ * <ul>
+ *     <li>{@code AWT} - Responsável pela manipulação de baixo nível e comunicação com o hardware. Utilizado para obter a resolução física do monitor (Toolkit, Dimension), definir a cor (Color) e alocar o framebuffer virtual (BufferedImage/Graphics2D) para a manipulação direta da matriz de pixels na memória.</li>
+ *     <li>{@code Swing} - Responsável pela interface gráfica de alto nível. Fornece a estrutura da janela em tela cheia e sem bordas (JFrame), o contêiner para projetar a imagem na tela (JLabel) e as caixas de diálogo interativas (JOptionPane).</li>
+ * </ul>
  *
  * @author Georis
  * @author Neto
@@ -21,11 +38,11 @@ public final class PixelRenderer {
     private static final Color COR_FUNDO = Color.BLACK;
 
     private PixelRenderer() {
-        // Contrutor privado porque é Classe utilitaria, não é para ser instanciada
+        // Contrutor privado porque é Classe utilitária, não é para ser instanciada
     }
 
     /**
-     * Descobre a resolucao real da tela do computador em uso, através do toolkit nativo de java
+     * Descobre a resolução real da tela do computador em uso, através do toolkit de awt nativo de java
      *
      * @return a largura e altura, em pixels, da tela atual
      */
@@ -33,13 +50,13 @@ public final class PixelRenderer {
 
     /**
      * Ativa exatamente um pixel na posicao (x, y) da imagem, na cor
-     * informada. Esta e a operacao de mais baixo nivel disponivel em Java para setar a cor
+     * informada. Esta e a operação de mais baixo nivel disponivel em Java para setar a cor
      * de um unico pixel do framebuffer, sem envolver nenhuma primitiva
      * geometrica. Deve ser chamada somente depois que as coordenadas de
-     * dispositivo (DC_x, DC_y) ja tiverem sido calculadas pelas
-     * transformacoes de {@link CoordinateTransformer}.
+     * dispositivo (DC_x, DC_y) já tiverem sido calculadas pelas
+     * transformações de {@link CoordinateTransformer}.
      *
-     * @param imagem o framebuffer (BufferedImage) onde o pixel sera aceso
+     * @param imagem o framebuffer (BufferedImage) onde o pixel será aceso
      * @param x a coluna do pixel (coordenada horizontal de dispositivo)
      * @param y a linha do pixel (coordenada vertical de dispositivo)
      * @param cor a cor a ser atribuida ao pixel (ex: 0x00FF00)
@@ -49,9 +66,9 @@ public final class PixelRenderer {
     }
 
     /**
-     * Abre uma janela do tamanho exato da tela, identica a um display
+     * Abre uma janela do tamanho exato da tela, idêntica a um display
      * comum: sem moldura, sem reticulados, com fundo totalmente limpo
-     * (uma unica cor solida), e acende um unico pixel na posicao
+     * (uma unica cor solida), e acende um único pixel na posicao
      * informada usando {@link #ligaPixel}. Nenhum outro elemento visual
      * e desenhado, conforme exigido pelo professor.
      *
@@ -73,10 +90,10 @@ public final class PixelRenderer {
             return;
         }
 
-        // Cria uma imagem em branco na memória, exatamente do tamanho do seu monitor, usando o padrão de cor RGB (display virtual)
+        // Cria uma imagem em branco na memória, exatamente do tamanho do monitor do usuário, usando o padrão de cor RGB (display virtual)
         BufferedImage imagem = new BufferedImage(largura, altura, BufferedImage.TYPE_INT_RGB);
 
-        Graphics2D g2d = imagem.createGraphics();
+        Graphics2D g2d = imagem.createGraphics(); // objeto gráfico de 2 dimensões a partir da nossa magem
         g2d.setColor(COR_FUNDO); // Pinta o fundo de preto
         g2d.fillRect(0, 0, largura, altura);
         g2d.dispose(); // Libera da memória
@@ -97,13 +114,13 @@ public final class PixelRenderer {
         frame.setUndecorated(true); // Remove qualquer decoração da janela
 
         // Coloca a nossa imagem (com fundo preto e 1 pixel verde) dentro de um componente visual (JLabel)
-        JLabel labelImagem = new JLabel(new ImageIcon(imagem));
+        JLabel labelImagem = new JLabel(new ImageIcon(imagem)); // ImageIcon pega a sua matriz crua e a converte em um ativo visual
 
         // Centraliza o componente
         frame.getContentPane().add(labelImagem, BorderLayout.CENTER);
 
         frame.pack(); // Ajusta o tamanho da janela para abraçar o tamanho exato da imagem
-        frame.setLocation(0, 0); // Posiciona a janela no canto superior esquerdo do monitor
-        frame.setVisible(true);
+        frame.setLocation(0, 0); // Posiciona a janela no canto superior esquerdo do monitor, paar o fullscreen
+        frame.setVisible(true); // RAM -> User
     }
 }

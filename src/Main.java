@@ -4,17 +4,17 @@ import javax.swing.JOptionPane;
 
 import model.*;
 import transformer.CoordinateTransformer;
-import ui.EntradaUsuario;
+import model.EntradaUsuario;
 import ui.PixelRenderer;
+import ui.UserInputReader;
 
 
 /**
- * Classe principal do laboratorio de transformacoes de coordenadas.
+ * Classe principal do laboratorio de transformações de coordenadas.
  * Integra a entrada do usuario ({@link UserInputReader}), o nucleo
- * matematico ({@link CoordinateTransformer}) e a renderizacao do pixel
- * ativo ({@link PixelRenderer}), cobrindo todos os requisitos do
- * enunciado: janela de mundo definida pelo usuario, calculo nos dois
- * cenarios de NDC, e exibicao do pixel ativo na resolucao real da tela.
+ * matemático ({@link CoordinateTransformer}) e a renderização do pixel
+ * ativo ({@link PixelRenderer}), cobrindo todos os requisito: janela de mundo definida pelo usuário, cálculo nos dois
+ * cenários de NDC, e exibição do pixel ativo na resolucao real da tela.
  *
  * @author João Victor
  * @since 23/09/2026
@@ -55,6 +55,7 @@ public class Main {
         }
 
         System.out.println(resumo);
+
         JOptionPane.showMessageDialog(null, resumo.toString(),
             "Resultado do calculo", JOptionPane.INFORMATION_MESSAGE);
 
@@ -88,6 +89,6 @@ public class Main {
             PixelRenderer.exibirPixelAtivo(pontosPorCenario[outroCenario.ordinal()], resolucao, COR_PIXEL);
         }
 
-        System.out.println("Execucao encerrada.");
+        System.out.println("Execução encerrada.");
     }
 }

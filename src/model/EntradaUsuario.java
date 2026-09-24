@@ -1,10 +1,9 @@
-package ui;
-
-import model.*;
+package model;
 
 /**
- * Agrupa os dois dados que o usuario fornece no requisito 1 do
- * laboratorio: a janela de mundo e o ponto de mundo a ser transformado.
+ * Agrupa os dois dados que o usuario fornece: a janela de mundo e o ponto de mundo a ser transformado.
+ * É o DTO (Data Transfer Object) porque recebe diretamento os dados de {@link ui.UserInputReader}, garantindo um fluxo
+ * ui >> Model
  *
  * @author Suelle
  * @date 22/09/2026

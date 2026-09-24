@@ -3,15 +3,15 @@ package transformer;
 import model.*;
 
 /**
- * Implementa os quatro procedimentos de transformacao de coordenadas
+ * Implementa os quatro procedimentos de transformação de coordenadas
  * pedidos no exercicio da Aula G2: user_to_ndc, ndc_to_user, ndc_to_dc e
- * inp_to_ndc. Cada procedimento e parametrizado pelo {@link NdcScenario}
+ * inp_to_ndc. Cada procedimento é parametrizado pelo {@link NdcScenario}
  * (intervalo [0,1] ou intervalo [-1,1]), como pede o requisito 2 do
  * laboratorio.
  *
- * Toda a matematica desta classe vem da mesma ideia: igualar a fracao
- * percorrida dentro de um intervalo de origem com a fracao percorrida
- * dentro do intervalo de destino (regra de tres entre intervalos).
+ * Toda a matematica desta classe vem da mesma ideia: igualar a fração
+ * percorrida dentro de um intervalo de origem com a fração percorrida
+ * dentro do intervalo de destino (regra de três entre intervalos).
  *
  * @author Horlan
  * @since 23/09/2026
@@ -19,7 +19,7 @@ import model.*;
 public final class CoordinateTransformer {
 
     private CoordinateTransformer() {
-        // Classe utilitaria: nao deve ser instanciada.
+        // Classe utilitaria que não deve ser instanciada
     }
 
     /**
@@ -46,7 +46,7 @@ public final class CoordinateTransformer {
 
     /**
      * Transforma um ponto de coordenadas NDC de volta para coordenadas de
-     * mundo (ndc_to_user). E a operacao inversa de {@link #userToNdc}.
+     * mundo (ndc_to_user). E a operação inversa de {@link #userToNdc}.
      *
      * @param janela a janela de mundo definida pelo usuario
      * @param pontoNdc o ponto em coordenadas NDC
@@ -100,8 +100,8 @@ public final class CoordinateTransformer {
 
     /**
      * Transforma um ponto de coordenadas de dispositivo (entrada) para
-     * coordenadas NDC (inp_to_ndc). E a operacao inversa de
-     * {@link #ndcToDc}, sem a etapa de arredondamento (que nao e
+     * coordenadas NDC (inp_to_ndc). E a operação inversa de
+     * {@link #ndcToDc}, sem a etapa de arredondamento (que não é
      * reversivel).
      *
      * @param pontoDispositivo o ponto em coordenadas de dispositivo
