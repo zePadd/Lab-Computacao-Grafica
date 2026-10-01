@@ -100,7 +100,7 @@ public final class PixelRenderer {
 
         // Acende o pixel ativo, ja depois de todas as transformacoes de
         // coordenadas terem sido calculadas em Main.
-        ligaPixel(imagem, pontoAtivo.getDcx(), pontoAtivo.getDcy(), corDoPixel);
+        drawPixel(imagem, pontoAtivo.getDcx(), pontoAtivo.getDcy(), corDoPixel);
 
         exibirJanelaComImagem(imagem);
     }
