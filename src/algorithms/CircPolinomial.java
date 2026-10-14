@@ -7,8 +7,9 @@ import java.awt.image.BufferedImage;
 /**
  * Desenho de circunferência pelo método polinomial (equação explícita).
  *
- * Usa a fórmula y = sqrt(r^2 - x^2) para calcular os pontos do primeiro
- * quadrante (1/4 do círculo) e espelha para os outros três quadrantes.
+ * Usa a fórmula y = sqrt(r^2 - x^2) para calcular um oitante
+ * (1/8 do círculo), com x de 0 até r/sqrt(2), e completa a
+ * circunferência por oito simetrias em torno do centro informado.
  *
  * Referência: aula 3 de Computação Gráfica - UEPB.
  *
@@ -17,8 +18,9 @@ import java.awt.image.BufferedImage;
  */
 public class CircPolinomial {
 
+    // <-------------------CÁLCULO E REGISTRO DOS PASSOS------------------->
     /**
-     * Desenha uma circunferencia centrada em (cx, cy) com raio r.
+     * Desenha uma circunferência centrada em (cx, cy) com raio r.
      *
      * @param imagem framebuffer
      * @param cx     coordenada x do centro
@@ -26,18 +28,13 @@ public class CircPolinomial {
      * @param raio   raio da circunferencia (em pixels)
      * @param cor    cor dos pixels
      */
-    public static void desenhar(BufferedImage imagem, int cx, int cy, int raio, Color cor) {
-        calcular(imagem, cx, cy, raio, cor);
-    }
-
-    // <-------------------CÁLCULO E REGISTRO DOS PASSOS------------------->
-    public static ResultadoRasterizacao calcular(BufferedImage imagem, int cx, int cy,
+    public static ResultadoRasterizacao polinomial(BufferedImage imagem, int cx, int cy,
                                                  int raio, Color cor) {
-        return calcular(imagem, cx, cy, raio, cor, false);
+        return polinomial(imagem, cx, cy, raio, cor, false);
     }
 
     // <-------------------COORDENADAS CARTESIANAS OPCIONAIS------------------->
-    public static ResultadoRasterizacao calcular(BufferedImage imagem, int cx, int cy,
+    public static ResultadoRasterizacao polinomial(BufferedImage imagem, int cx, int cy,
                                                  int raio, Color cor, boolean cartesiano) {
         ResultadoRasterizacao.validarCirculo(cx, cy, raio);
         ResultadoRasterizacao registro = new ResultadoRasterizacao(imagem, cor, cartesiano);

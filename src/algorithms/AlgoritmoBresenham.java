@@ -19,6 +19,7 @@ import java.awt.image.BufferedImage;
  */
 public class AlgoritmoBresenham {
 
+    // <-------------------CÁLCULO E REGISTRO DOS PASSOS------------------->
     /**
      * Desenha uma reta de (x1, y1) ate (x2, y2) usando Bresenham com
      * simetria de oitantes.
@@ -30,18 +31,13 @@ public class AlgoritmoBresenham {
      * @param y2     coordenada y do ponto final
      * @param cor    cor dos pixels da reta
      */
-    public static void desenhar(BufferedImage imagem, int x1, int y1, int x2, int y2, Color cor) {
-        calcular(imagem, x1, y1, x2, y2, cor);
-    }
-
-    // <-------------------CÁLCULO E REGISTRO DOS PASSOS------------------->
-    public static ResultadoRasterizacao calcular(BufferedImage imagem, int x1, int y1,
+    public static ResultadoRasterizacao bresenham(BufferedImage imagem, int x1, int y1,
                                                  int x2, int y2, Color cor) {
-        return calcular(imagem, x1, y1, x2, y2, cor, false);
+        return bresenham(imagem, x1, y1, x2, y2, cor, false);
     }
 
     // <-------------------COORDENADAS CARTESIANAS OPCIONAIS------------------->
-    public static ResultadoRasterizacao calcular(BufferedImage imagem, int x1, int y1,
+    public static ResultadoRasterizacao bresenham(BufferedImage imagem, int x1, int y1,
                                                  int x2, int y2, Color cor, boolean cartesiano) {
         ResultadoRasterizacao.validarReta(x1, y1, x2, y2);
         ResultadoRasterizacao registro = new ResultadoRasterizacao(imagem, cor, cartesiano);

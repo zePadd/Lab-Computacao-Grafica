@@ -16,6 +16,7 @@ import java.awt.image.BufferedImage;
  */
 public class CircPontoMedio {
 
+    // <-------------------CÁLCULO E REGISTRO DOS PASSOS------------------->
     /**
      * Desenha uma circunferencia centrada em (cx, cy) com raio r.
      *
@@ -25,18 +26,13 @@ public class CircPontoMedio {
      * @param raio   raio da circunferencia (em pixels)
      * @param cor    cor dos pixels
      */
-    public static void desenhar(BufferedImage imagem, int cx, int cy, int raio, Color cor) {
-        calcular(imagem, cx, cy, raio, cor);
-    }
-
-    // <-------------------CÁLCULO E REGISTRO DOS PASSOS------------------->
-    public static ResultadoRasterizacao calcular(BufferedImage imagem, int cx, int cy,
+    public static ResultadoRasterizacao pontoMedio(BufferedImage imagem, int cx, int cy,
                                                  int raio, Color cor) {
-        return calcular(imagem, cx, cy, raio, cor, false);
+        return pontoMedio(imagem, cx, cy, raio, cor, false);
     }
 
     // <-------------------COORDENADAS CARTESIANAS OPCIONAIS------------------->
-    public static ResultadoRasterizacao calcular(BufferedImage imagem, int cx, int cy,
+    public static ResultadoRasterizacao pontoMedio(BufferedImage imagem, int cx, int cy,
                                                  int raio, Color cor, boolean cartesiano) {
         ResultadoRasterizacao.validarCirculo(cx, cy, raio);
         ResultadoRasterizacao registro = new ResultadoRasterizacao(imagem, cor, cartesiano);

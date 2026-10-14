@@ -7,11 +7,12 @@ import java.awt.image.BufferedImage;
 /**
  * Desenho de circunferência pelo método trigonometrico.
  *
- * Calcula cada ponto da circunferência com:
- *   x = cx + r * cos(theta)
- *   y = cy + r * sin(theta)
- * variando theta de 0 a 2PI com passo pequeno o suficiente para não
- * deixar buracos visíveis.
+ * Calcula os pontos de um oitante com:
+ *   x = r * cos(theta)
+ *   y = r * sin(theta)
+ * variando theta de 0 a PI/4, conforme os slides do professor.
+ * Arredonda os pontos, aplica oito simetrias e soma o centro (cx, cy).
+ * O passo angular pode deixar lacunas, inclusive na junção dos oitantes.
  *
  * Referencia: aula 3 de Computacao Grafica — UEPB.
  *
@@ -19,8 +20,10 @@ import java.awt.image.BufferedImage;
  */
 public class CircTrigonometrico {
 
+    // <-------------------CÁLCULO E REGISTRO DOS PASSOS------------------->
     /**
      * Desenha uma circunferencia centrada em (cx, cy) com raio r.
+     * Escolhe automaticamente o passo angular de 1/r radiano.
      *
      * @param imagem framebuffer
      * @param cx     coordenada x do centro
@@ -28,25 +31,19 @@ public class CircTrigonometrico {
      * @param raio   raio da circunferencia (em pixels)
      * @param cor    cor dos pixels
      */
-    public static void desenhar(BufferedImage imagem, int cx, int cy, int raio, Color cor) {
-        calcular(imagem, cx, cy, raio, cor);
-    }
-
-    // <-------------------CÁLCULO E REGISTRO DOS PASSOS------------------->
-    /** Assinatura compatível: escolhe o passo automático de 1/r radiano. */
-    public static ResultadoRasterizacao calcular(BufferedImage imagem, int cx, int cy,
+    public static ResultadoRasterizacao trigonometrico(BufferedImage imagem, int cx, int cy,
                                                  int raio, Color cor) {
-        return calcular(imagem, cx, cy, raio, cor, Math.toDegrees(1.0 / Math.max(raio, 1)));
+        return trigonometrico(imagem, cx, cy, raio, cor, Math.toDegrees(1.0 / Math.max(raio, 1)));
     }
 
     /** O campo da interface está em graus; seno e cosseno recebem radianos. */
-    public static ResultadoRasterizacao calcular(BufferedImage imagem, int cx, int cy,
+    public static ResultadoRasterizacao trigonometrico(BufferedImage imagem, int cx, int cy,
                                                  int raio, Color cor, double passoGraus) {
-        return calcular(imagem, cx, cy, raio, cor, passoGraus, false);
+        return trigonometrico(imagem, cx, cy, raio, cor, passoGraus, false);
     }
 
     // <-------------------COORDENADAS CARTESIANAS OPCIONAIS------------------->
-    public static ResultadoRasterizacao calcular(BufferedImage imagem, int cx, int cy,
+    public static ResultadoRasterizacao trigonometrico(BufferedImage imagem, int cx, int cy,
                                                  int raio, Color cor, double passoGraus, boolean cartesiano) {
         ResultadoRasterizacao.validarCirculo(cx, cy, raio);
         if (!Double.isFinite(passoGraus) || passoGraus <= 0 || passoGraus > 360

@@ -5,7 +5,7 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 /**
- * Implementação do algoritmo DDA (Digital Differential Analyzer) para
+ * Implementação do algoritmo dda (Digital Differential Analyzer) para
  * rasterização de retas. O DDA calcula incrementos fracionários em x e y
  * e arredonda a cada passo para determinar qual pixel acender.
  *
@@ -26,7 +26,7 @@ public class AlgoritmoDDA {
      * @param y2     coordenada y do ponto final
      * @param cor    cor dos pixels da reta
      */
-    public static ResultadoRasterizacao DDA(BufferedImage imagem, int x1, int y1, int x2, int y2, Color cor, boolean cartesiano) {
+    public static ResultadoRasterizacao dda(BufferedImage imagem, int x1, int y1, int x2, int y2, Color cor, boolean cartesiano) {
         ResultadoRasterizacao.validarReta(x1, y1, x2, y2);
         ResultadoRasterizacao registro = new ResultadoRasterizacao(imagem, cor, cartesiano);
         int dx = x2 - x1;
