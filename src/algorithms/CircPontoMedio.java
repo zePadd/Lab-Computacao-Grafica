@@ -5,15 +5,14 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 /**
- * Desenho de circunferência pelo algoritmo do ponto médio (Bresenham).
+ * Desenho de circunferencia pelo algoritmo do ponto medio (Bresenham).
  *
- * Usa apenas aritmética inteira: calcula 1/8 do arco (do topo até a
+ * Usa apenas aritmetica inteira: calcula 1/8 do arco (do topo ate a
  * diagonal de 45 graus) e espelha em 8 octantes por simetria.
  *
- * Refêrencia: aula 3 de Computação Gráfica - UEPB
+ * Referencia: aulag4-2025, slides 14, 15, 16 e 17 — UEPB.
  *
- * @author Suelle
- * @date 10/10/2026
+ * @author Suelle Maciel
  */
 public class CircPontoMedio {
 
@@ -75,12 +74,12 @@ public class CircPontoMedio {
             x++;
             // Mesma recorrência da base, reorganizada para mostrar os valores anteriores.
             ponto_circulo(registro, String.valueOf(++etapa), "Antes: (" + anteriorX + "," + anteriorY
-                            + "); IncE=2*" + anteriorX + "+3=" + incE + "; IncSE=2*(" + anteriorX
-                            + "-" + anteriorY + ")+5=" + incSE + "; d=" + anteriorD
-                            + (anteriorD < 0 ? " < 0" : " ≥ 0") + " → " + escolha
-                            + "; x=" + anteriorX + "+1=" + x + "; y=" + anteriorY
-                            + (escolha.equals("SE") ? "-1=" : "+0=") + y
-                            + "; novo d=" + anteriorD + "+(" + incrementoUsado + ")=" + d,
+                    + "); IncE=2*" + anteriorX + "+3=" + incE + "; IncSE=2*(" + anteriorX
+                    + "-" + anteriorY + ")+5=" + incSE + "; d=" + anteriorD
+                    + (anteriorD < 0 ? " < 0" : " ≥ 0") + " → " + escolha
+                    + "; x=" + anteriorX + "+1=" + x + "; y=" + anteriorY
+                    + (escolha.equals("SE") ? "-1=" : "+0=") + y
+                    + "; novo d=" + anteriorD + "+(" + incrementoUsado + ")=" + d,
                     cx, cy, x, y);
         }
         return registro;
@@ -89,11 +88,10 @@ public class CircPontoMedio {
     // <-------------------OITO SIMETRIAS------------------->
     /** Acende os 8 pixels simetricos a partir de (x,y) relativo ao centro. */
     private static void ponto_circulo(ResultadoRasterizacao registro, String etapa,
-                                      String conta, int cx, int cy, int x, int y) {
+                                        String conta, int cx, int cy, int x, int y) {
         registro.registrar(etapa, conta + "; centro=(" + cx + "," + cy + "), simetrias de (" + x + "," + y + ")",
                 cx + x, cy + y, cx + y, cy + x, cx + y, cy - x, cx + x, cy - y,
                 cx - x, cy - y, cx - y, cy - x, cx - y, cy + x, cx - x, cy + y);
     }
 
 }
-
