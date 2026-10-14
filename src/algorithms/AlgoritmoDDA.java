@@ -11,7 +11,8 @@ import java.awt.image.BufferedImage;
  *
  * Referência: aula 3 de Computação Gráfica — UEPB.
  *
- * @author José Araújo Agra Neto
+ * @author Neto
+ * @date 10/10/2026
  */
 public class AlgoritmoDDA {
 

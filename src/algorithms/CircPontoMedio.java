@@ -5,14 +5,15 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 /**
- * Desenho de circunferencia pelo algoritmo do ponto medio (Bresenham).
+ * Desenho de circunferência pelo algoritmo do ponto médio (Bresenham).
  *
- * Usa apenas aritmetica inteira: calcula 1/8 do arco (do topo ate a
+ * Usa apenas aritmética inteira: calcula 1/8 do arco (do topo até a
  * diagonal de 45 graus) e espelha em 8 octantes por simetria.
  *
- * Referencia: aula 3 de Computacao Grafica — UEPB.
+ * Refêrencia: aula 3 de Computação Gráfica - UEPB
  *
  * @author Suelle
+ * @date 10/10/2026
  */
 public class CircPontoMedio {
 
