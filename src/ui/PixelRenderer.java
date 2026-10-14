@@ -31,6 +31,7 @@ import javax.swing.*;
  *
  * @author Georis
  * @author Neto
+ * @author Gabriela
  * @date 23/09/2026
  */
 public final class PixelRenderer {
@@ -122,5 +123,10 @@ public final class PixelRenderer {
         frame.pack(); // Ajusta o tamanho da janela para abraçar o tamanho exato da imagem
         frame.setLocation(0, 0); // Posiciona a janela no canto superior esquerdo do monitor, paar o fullscreen
         frame.setVisible(true); // RAM -> User
+    }
+    // <-------------------FRAMEBUFFER COMPARTILHADO COM O LAB2------------------->
+    /** Imagem preta sem primitivas prontas; cada algoritmo acende seus pixels. */
+    public static BufferedImage criarImagem(int largura, int altura) {
+        return new BufferedImage(largura, altura, BufferedImage.TYPE_INT_RGB);
     }
 }
