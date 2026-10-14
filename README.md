@@ -25,19 +25,19 @@ O programa segue estes passos:
 |`CoordinateTransformer`|   **Horlan**     | `transformer` | Implementa os quatro procedimentos de transformacao de coordenadas      |
 |`EntradaUsuario`       |   **Suelle**     | `ui`          | Agrupa os dois dados que o usuario fornece                              |
 |`PixelRenderer`        |  **Georis/Neto** | `ui`          | Descobre a resolução real do dispositivo e exibe o pixel verde na tela  |
-|     `Main.java`       |  **João Victor** | (padrão)      | Integra tudo: entrada → transformação → exibição                        |
+|     `MainLab1.java`       |  **João Victor** | (padrão)      | Integra tudo: entrada → transformação → exibição                        |
 |     `README.md`       |  **João Victor** | —             | Este arquivo                                                            |
 
 ## Como compilar e rodar
 
-O projeto usa pacotes (`model`, `transformer`, `ui`), então a estrutura de pastas dentro de `src` importa: `Main.java` fica solto na raiz, e cada classe fica dentro da pasta que dá nome ao seu pacote. Com o JDK instalado (11 ou superior), rode a partir da pasta `src`:
+O projeto usa pacotes (`model`, `transformer`, `ui`), então a estrutura de pastas dentro de `src` importa: `MainLab1.java` fica solto na raiz, e cada classe fica dentro da pasta que dá nome ao seu pacote. Com o JDK instalado (11 ou superior), rode a partir da pasta `src`:
 
 ```bash
-javac Main.java
-java Main
+javac MainLab1.java
+java MainLab1
 ```
 
-(`javac Main.java` já compila `model`, `transformer` e `ui` automaticamente, por causa dos imports. Se preferir compilar tudo explicitamente: `javac -d out $(find . -name "*.java")` e depois `java -cp out Main`.)
+(`javac MainLab1.java` já compila `model`, `transformer` e `ui` automaticamente, por causa dos imports. Se preferir compilar tudo explicitamente: `javac -d out $(find . -name "*.java")` e depois `java -cp out MainLab1`.)
 
 O programa vai abrir caixas de diálogo pedindo os dados e, no final, ocupar a tela inteira para mostrar o pixel.
 
@@ -54,9 +54,9 @@ O programa vai abrir caixas de diálogo pedindo os dados e, no final, ocupar a t
 ## Como cada requisito do enunciado foi atendido
 
 - **Requisito 1** (janela do mundo definida pelo usuário): `UserInputReader.lerJanelaDeMundo()`.
-- **Requisito 2** (dois cenários de NDC): `NdcScenario` + `Main` calcula os dois cenários para o mesmo ponto.
+- **Requisito 2** (dois cenários de NDC): `NdcScenario` + `MainLab1` calcula os dois cenários para o mesmo ponto.
 - **Requisito 3** (exibir na tela real): `PixelRenderer.obterResolucaoDaTela()` + `exibirPixelAtivo(...)`.
-- **Requisito 4** (pixel de verdade, sem agrupamento): único uso de `setRGB` em `PixelRenderer.drawPixel`, cor `0x00FF00` (`Main.COR_PIXEL`), conforme exigido pelo professor.
+- **Requisito 4** (pixel de verdade, sem agrupamento): único uso de `setRGB` em `PixelRenderer.drawPixel`, cor `0x00FF00` (`MainLab1.COR_PIXEL`), conforme exigido pelo professor.
 
 ## Integrantes da equipe
 

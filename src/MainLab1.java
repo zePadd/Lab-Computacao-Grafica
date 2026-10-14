@@ -19,7 +19,7 @@ import ui.UserInputReader;
  * @author João Victor
  * @since 23/09/2026
  */
-public class Main {
+public class MainLab1 {
 
     /** Cor do pixel ativo é verde (0x00FF00)*/
     private static final Color COR_PIXEL = new Color(0x00FF00);
