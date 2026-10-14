@@ -51,9 +51,9 @@ public class CircPontoMedio {
         registro.explicar("IncE=2*x+3; IncSE=2*(x-y)+5. Iniciais: IncE=3; IncSE=" + (5 - 2 * raio));
         registro.explicar("Coordenadas: (cx±x,cy±y) e (cx±y,cy±x). Os sinais cobrem ambos os sentidos de Y.");
         // Acende os 8 pontos simetricos do pixel inicial (0, r)
-        plotar8Simetrias(registro, "0", "Inicial: (x,y)=(0," + raio + "), d=" + d, cx, cy, x, y);
+        ponto_circulo(registro, "0", "Inicial: (x,y)=(0," + raio + "), d=" + d, cx, cy, x, y);
         int etapa = 0;
-        while (x < y) {
+        while (y > x) {
             int anteriorX = x;
             int anteriorY = y;
             int anteriorD = d;
@@ -69,18 +69,18 @@ public class CircPontoMedio {
                 // Ponto medio esta fora ou sobre o circulo: escolhe SE
                 incrementoUsado = incSE;
                 escolha = "SE";
-                y--;
             }
             d += incrementoUsado;
+            if (escolha.equals("SE")) y--; // Depois de atualizar d, como no slide 16.
             x++;
             // Mesma recorrência da base, reorganizada para mostrar os valores anteriores.
-            plotar8Simetrias(registro, String.valueOf(++etapa), "Antes: (" + anteriorX + "," + anteriorY
-                    + "); IncE=2*" + anteriorX + "+3=" + incE + "; IncSE=2*(" + anteriorX
-                    + "-" + anteriorY + ")+5=" + incSE + "; d=" + anteriorD
-                    + (anteriorD < 0 ? " < 0" : " ≥ 0") + " → " + escolha
-                    + "; x=" + anteriorX + "+1=" + x + "; y=" + anteriorY
-                    + (escolha.equals("SE") ? "-1=" : "+0=") + y
-                    + "; novo d=" + anteriorD + "+(" + incrementoUsado + ")=" + d,
+            ponto_circulo(registro, String.valueOf(++etapa), "Antes: (" + anteriorX + "," + anteriorY
+                            + "); IncE=2*" + anteriorX + "+3=" + incE + "; IncSE=2*(" + anteriorX
+                            + "-" + anteriorY + ")+5=" + incSE + "; d=" + anteriorD
+                            + (anteriorD < 0 ? " < 0" : " ≥ 0") + " → " + escolha
+                            + "; x=" + anteriorX + "+1=" + x + "; y=" + anteriorY
+                            + (escolha.equals("SE") ? "-1=" : "+0=") + y
+                            + "; novo d=" + anteriorD + "+(" + incrementoUsado + ")=" + d,
                     cx, cy, x, y);
         }
         return registro;
@@ -88,11 +88,12 @@ public class CircPontoMedio {
 
     // <-------------------OITO SIMETRIAS------------------->
     /** Acende os 8 pixels simetricos a partir de (x,y) relativo ao centro. */
-    private static void plotar8Simetrias(ResultadoRasterizacao registro, String etapa,
-                                        String conta, int cx, int cy, int x, int y) {
+    private static void ponto_circulo(ResultadoRasterizacao registro, String etapa,
+                                      String conta, int cx, int cy, int x, int y) {
         registro.registrar(etapa, conta + "; centro=(" + cx + "," + cy + "), simetrias de (" + x + "," + y + ")",
-                cx + x, cy + y, cx - x, cy + y, cx + x, cy - y, cx - x, cy - y,
-                cx + y, cy + x, cx - y, cy + x, cx + y, cy - x, cx - y, cy - x);
+                cx + x, cy + y, cx + y, cy + x, cx + y, cy - x, cx + x, cy - y,
+                cx - x, cy - y, cx - y, cy - x, cx - y, cy + x, cx - x, cy + y);
     }
 
 }
+
