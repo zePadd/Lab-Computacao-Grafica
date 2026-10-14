@@ -28,7 +28,7 @@ public class AlgoritmoDDA {
      */
     public static ResultadoRasterizacao DDA(BufferedImage imagem, int x1, int y1, int x2, int y2, Color cor, boolean cartesiano) {
         ResultadoRasterizacao.validarReta(x1, y1, x2, y2);
-        ResultadoRasterizacao registro = new ResultadoRasterizacao(imagem, cor, false);
+        ResultadoRasterizacao registro = new ResultadoRasterizacao(imagem, cor, cartesiano);
         int dx = x2 - x1;
         int dy = y2 - y1;
 
