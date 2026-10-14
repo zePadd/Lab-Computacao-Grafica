@@ -36,6 +36,8 @@ public class CircPontoMedio {
                                                  int raio, Color cor, boolean cartesiano) {
         ResultadoRasterizacao.validarCirculo(cx, cy, raio);
         ResultadoRasterizacao registro = new ResultadoRasterizacao(imagem, cor, cartesiano);
+        // Valores compactos são registrados junto com as contas completas.
+        registro.definirColunas("x local", "y local", "d antes", "Escolha", "Incremento", "d depois");
         int x = 0;
         int y = raio;
         // Variavel de decisao inicial: d = 1 - r
@@ -47,6 +49,7 @@ public class CircPontoMedio {
         registro.explicar("Coordenadas: (cx±x,cy±y) e (cx±y,cy±x). Os sinais cobrem ambos os sentidos de Y.");
         // Acende os 8 pontos simetricos do pixel inicial (0, r)
         ponto_circulo(registro, "0", "Inicial: (x,y)=(0," + raio + "), d=" + d, cx, cy, x, y);
+        registro.resumirPasso(x, y, "—", "Inicial", "—", d);
         int etapa = 0;
         while (y > x) {
             int anteriorX = x;
@@ -77,6 +80,7 @@ public class CircPontoMedio {
                     + (escolha.equals("SE") ? "-1=" : "+0=") + y
                     + "; novo d=" + anteriorD + "+(" + incrementoUsado + ")=" + d,
                     cx, cy, x, y);
+            registro.resumirPasso(x, y, anteriorD, escolha, incrementoUsado, d);
         }
         return registro;
     }

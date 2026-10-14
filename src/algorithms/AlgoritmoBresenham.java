@@ -41,6 +41,8 @@ public class AlgoritmoBresenham {
                                                  int x2, int y2, Color cor, boolean cartesiano) {
         ResultadoRasterizacao.validarReta(x1, y1, x2, y2);
         ResultadoRasterizacao registro = new ResultadoRasterizacao(imagem, cor, cartesiano);
+        // Valores compactos são registrados junto com as contas completas.
+        registro.definirColunas("X", "Y", "d antes", "Escolha", "Incremento", "d depois");
         int deslocamentoX = x2 - x1;
         int deslocamentoY = cartesiano ? y2 - y1 : y1 - y2; // Deslocamento matemático: norte é Y positivo.
         int dx = Math.abs(deslocamentoX);
@@ -79,6 +81,8 @@ public class AlgoritmoBresenham {
                 + "; IncNE = 2*(" + dy + "-" + dx + ") = " + incNE);
         registro.explicar("E/NE são escolhas no núcleo canônico; a simetria recupera as coordenadas de entrada.");
         int alturaCanonica = 0;
+        Object decisaoAnterior = "—", incrementoAnterior = "—";
+        String movimento = "Inicial";
         String decisao = "Ponto inicial; d=" + d;
         for (int avanco = 0; avanco <= dx; avanco++) {
             int x = x1 + sx * (trocou ? alturaCanonica : avanco);
@@ -88,7 +92,11 @@ public class AlgoritmoBresenham {
                     + (trocou ? alturaCanonica : avanco) + "=" + x
                     + "; Y=" + y1 + (cartesiano ? "+(" : "-(") + sy + ")*"
                     + (trocou ? avanco : alturaCanonica) + "=" + y, x, y);
+            registro.resumirPasso(x, y, decisaoAnterior, movimento, incrementoAnterior, d);
             if (avanco == dx) break;
+            decisaoAnterior = d;
+            movimento = d <= 0 ? "E" : "NE";
+            incrementoAnterior = d <= 0 ? incE : incNE;
             int anterior = d;
             if (d <= 0) {
                 d += incE;

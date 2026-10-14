@@ -21,6 +21,7 @@ public final class ResultadoRasterizacao {
     private final BufferedImage imagem;
     private final Color cor;
     private final boolean cartesiano;
+    private List<String> colunas = Collections.emptyList();
     private final List<Passo> passos = new ArrayList<>();
     private final StringBuilder resumo = new StringBuilder();
 
@@ -30,6 +31,10 @@ public final class ResultadoRasterizacao {
         private final String operacao;
         private final List<Point> pixels;
         private final String descricaoPixels;
+        private List<Object> valores = Collections.emptyList();
+
+        /** Valores da mesma execução, usados na tabela compacta. */
+        public List<Object> getValores() { return valores; }
 
         private Passo(String etapa, String operacao, List<Point> pixels, String descricaoPixels) {
             this.etapa = etapa;
@@ -88,6 +93,21 @@ public final class ResultadoRasterizacao {
     public BufferedImage getImagem() { return imagem; }
     /** @return passos na ordem de execução */
     public List<Passo> getPassos() { return Collections.unmodifiableList(passos); }
+
+    // <-------------------DADOS DA TABELA COMPACTA------------------->
+    public void definirColunas(String... nomes) {
+        colunas = Collections.unmodifiableList(new ArrayList<>(java.util.Arrays.asList(nomes)));
+    }
+    public List<String> getColunas() { return colunas; }
+
+    /** Associa os valores já calculados ao último passo, sem repetir o algoritmo. */
+    public void resumirPasso(Object... valores) {
+        if (passos.isEmpty() || valores.length != colunas.size()) {
+            throw new IllegalStateException("Valores incompatíveis com as colunas do passo.");
+        }
+        passos.get(passos.size() - 1).valores = Collections.unmodifiableList(
+                new ArrayList<>(java.util.Arrays.asList(valores)));
+    }
 
     // <-------------------REGISTRO E ESCRITA DOS MESMOS PIXELS------------------->
     /**

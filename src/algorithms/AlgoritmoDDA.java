@@ -29,6 +29,8 @@ public class AlgoritmoDDA {
     public static ResultadoRasterizacao dda(BufferedImage imagem, int x1, int y1, int x2, int y2, Color cor, boolean cartesiano) {
         ResultadoRasterizacao.validarReta(x1, y1, x2, y2);
         ResultadoRasterizacao registro = new ResultadoRasterizacao(imagem, cor, cartesiano);
+        // Valores compactos são registrados junto com as contas completas.
+        registro.definirColunas("X calculado", "Y calculado", "X pixel", "Y pixel");
         int dx = x2 - x1;
         int dy = y2 - y1;
 
@@ -41,6 +43,7 @@ public class AlgoritmoDDA {
         if (length == 0) {
             // Ponto unico: os dois extremos sao o mesmo pixel
             registro.registrar("0", "Extremos coincidentes: não dividir por zero.", x1, y1);
+            registro.resumirPasso(x1, y1, x1, y1);
             return registro;
         }
 
@@ -58,6 +61,7 @@ public class AlgoritmoDDA {
             // Garante que o pixel esta dentro dos limites da imagem no registro.
             registro.registrar(String.valueOf(i), chegada + "; round(" + x + ") = " + px
                     + "; round(" + y + ") = " + py, px, py);
+            registro.resumirPasso(x, y, px, py);
             if (i < length) {
                 chegada = "x = " + x + " + (" + xInc + ") = " + (x + xInc)
                         + "; y = " + y + " + (" + yInc + ") = " + (y + yInc);

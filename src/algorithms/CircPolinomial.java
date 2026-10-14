@@ -38,6 +38,8 @@ public class CircPolinomial {
                                                  int raio, Color cor, boolean cartesiano) {
         ResultadoRasterizacao.validarCirculo(cx, cy, raio);
         ResultadoRasterizacao registro = new ResultadoRasterizacao(imagem, cor, cartesiano);
+        // Valores compactos são registrados junto com as contas completas.
+        registro.definirColunas("X local", "r² − x²", "Y calculado", "Y arredondado");
         registro.explicar("Polinomial: x²+y²=r² → y=√(r²-x²). Centro informado=(" + cx + "," + cy + ").");
         registro.explicar("r² = " + raio + "*" + raio + " = " + ((double) raio * raio));
         registro.explicar("Simetrias de ordem 8: (cx±x,cy±y) e (cx±y,cy±x).");
@@ -55,6 +57,7 @@ public class CircPolinomial {
             ponto_circulo(registro, "X=" + x, "r²-x²=" + raio + "²-" + x + "²="
                             + radicando + "; y=√(" + radicando + ")=" + raiz + "; round(y)=" + y,
                     cx, cy, x, y);
+            registro.resumirPasso(x, radicando, raiz, y);
         }
         return registro;
     }

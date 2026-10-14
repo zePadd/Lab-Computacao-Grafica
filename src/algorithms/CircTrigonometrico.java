@@ -51,6 +51,8 @@ public class CircTrigonometrico {
             throw new IllegalArgumentException("Passo deve estar entre 0,018° e 360° (até 20.000 amostras).");
         }
         ResultadoRasterizacao registro = new ResultadoRasterizacao(imagem, cor, cartesiano);
+        // Valores compactos são registrados junto com as contas completas.
+        registro.definirColunas("θ (graus)", "X calculado", "Y calculado", "X arred.", "Y arred.");
         double i = Math.toRadians(passoGraus); // Passo angular i do slide 9, em radianos.
         double thetaEnd = Math.PI / 4.0;
         double passo = i; // Mantém o nome usado nas mensagens da interface.
@@ -80,6 +82,7 @@ public class CircTrigonometrico {
                             + "; round(x)=" + arredondadoX + "; round(y)=" + arredondadoY
                             + "; próximo θ=" + theta + "+" + i + "=" + (theta + i),
                     cx, cy, arredondadoX, arredondadoY);
+            registro.resumirPasso(Math.toDegrees(theta), x, y, arredondadoX, arredondadoY);
         }
         return registro;
     }
