@@ -80,13 +80,21 @@ public class AlgoritmoBresenham {
         registro.explicar("IncE = 2*" + dy + " = " + incE
                 + "; IncNE = 2*(" + dy + "-" + dx + ") = " + incNE);
         registro.explicar("E/NE são escolhas no núcleo canônico; a simetria recupera as coordenadas de entrada.");
-        int alturaCanonica = 0;
+        int alturaCanonica = 0; // Quantas vezes o eixo secundário avançou
         Object decisaoAnterior = "—", incrementoAnterior = "—";
         String movimento = "Inicial";
         String decisao = "Ponto inicial; d=" + d;
         for (int avanco = 0; avanco <= dx; avanco++) {
+
+            /*
+
+                Recuperação das coordenadas: algoritmo decide qual eixo recebe o avanço principal e aplica os sinais 
+                adequados para chegar ao pixel real
+
+            */
             int x = x1 + sx * (trocou ? alturaCanonica : avanco);
             int y = y1 + (cartesiano ? 1 : -1) * sy * (trocou ? avanco : alturaCanonica);
+
             registro.registrar(String.valueOf(avanco), decisao + "; (u,v)=(" + avanco
                     + "," + alturaCanonica + "); X=" + x1 + "+(" + sx + ")*"
                     + (trocou ? alturaCanonica : avanco) + "=" + x
