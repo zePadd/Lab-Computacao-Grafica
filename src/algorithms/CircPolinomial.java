@@ -43,11 +43,13 @@ public class CircPolinomial {
         registro.explicar("Polinomial: x²+y²=r² → y=√(r²-x²). Centro informado=(" + cx + "," + cy + ").");
         registro.explicar("r² = " + raio + "*" + raio + " = " + ((double) raio * raio));
         registro.explicar("Simetrias de ordem 8: (cx±x,cy±y) e (cx±y,cy±x).");
+
         double xend = raio / Math.sqrt(2.0);
         int i = 1; // Passo espacial do slide 7: um pixel por iteração.
         registro.explicar("xend=r/√2=" + raio + "/√2=" + xend + "; passo i=" + i + ".");
         registro.explicar("Calcular somente o arco de 45 graus; parar quando x > xend.");
         registro.explicar("O passo pode não alcançar a diagonal: podem restar lacunas entre oitantes. Não acrescentamos pontos além do laço do slide.");
+
         // Varia x de 0 até xend; para cada x calcula y = sqrt(r^2 - x^2).
         for (int x = 0; x <= xend; x = x + i) {
             double radicando = (double) raio * raio - (double) x * x;
