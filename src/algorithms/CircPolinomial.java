@@ -7,9 +7,11 @@ import java.awt.image.BufferedImage;
 /**
  * Desenho de circunferência pelo método polinomial (equação explícita).
  *
- * Usa a fórmula y = sqrt(r^2 - x^2) para calcular um oitante
- * (1/8 do círculo), com x de 0 até r/sqrt(2), e completa a
- * circunferência por oito simetrias em torno do centro informado.
+ * Usa a fórmula y = sqrt(r^2 - x^2) em uma única varredura de x,
+ * de 0 até o raio. Calcula um quadrante e espelha os pontos nos outros
+ * três, somando o centro informado. Esta versão simples pode deixar
+ * lacunas perto das extremidades laterais da circunferência, mas foi a recomendada pelo professor
+ * para demonstrar a fragilidade do algoritmo. A versão com simetria nos 8 octantes diminui as falhas
  *
  * Referência: aula 3 de Computação Gráfica - UEPB.
  *
@@ -42,20 +44,20 @@ public class CircPolinomial {
         registro.definirColunas("X local", "r² − x²", "Y calculado", "Y arredondado");
         registro.explicar("Polinomial: x²+y²=r² → y=√(r²-x²). Centro informado=(" + cx + "," + cy + ").");
         registro.explicar("r² = " + raio + "*" + raio + " = " + ((double) raio * raio));
-        registro.explicar("Simetrias de ordem 8: (cx±x,cy±y) e (cx±y,cy±x).");
+        registro.explicar("Quatro simetrias: (cx+x,cy+y), (cx+x,cy-y), (cx-x,cy-y), (cx-x,cy+y).");
+        registro.explicar("Uma única varredura: x de 0 até r=" + raio + ", com incremento de 1 pixel.");
+        registro.explicar("Perto de x=r, Y pode saltar vários pixels. As lacunas são mantidas, sem varredura em Y nem ligação entre pontos.");
 
-        double xend = raio / Math.sqrt(2.0);
-        int i = 1; // Passo espacial do slide 7: um pixel por iteração.
-        registro.explicar("xend=r/√2=" + raio + "/√2=" + xend + "; passo i=" + i + ".");
-        registro.explicar("Calcular somente o arco de 45 graus; parar quando x > xend.");
-        registro.explicar("O passo pode não alcançar a diagonal: podem restar lacunas entre oitantes. Não acrescentamos pontos além do laço do slide.");
 
-        // Varia x de 0 até xend; para cada x calcula y = sqrt(r^2 - x^2).
-        for (int x = 0; x <= xend; x = x + i) {
+        // <-------------------VARREDURA ÚNICA EM X------------------->
+
+        // A raiz positiva fornece o quadrante com x >= 0 e y >= 0.
+        // Incluímos x=0 e x=raio: são raio+1 etapas, incluindo os extremos.
+        for (int x = 0; x <= raio; x++) {
             double radicando = (double) raio * raio - (double) x * x;
             double raiz = Math.sqrt(radicando);
-            int y = (int) Math.round(raiz);
-            // Completa os oito pontos pela função Círculo_ponto do slide 4.
+            int y = (int) Math.round(raiz); // A imagem usa posições inteiras; guardamos também a raiz na tabela.
+            // Espelha o ponto nos quatro quadrantes, sem trocar x por y (como no caso dos oitantes)
             ponto_circulo(registro, "X=" + x, "r²-x²=" + raio + "²-" + x + "²="
                             + radicando + "; y=√(" + radicando + ")=" + raiz + "; round(y)=" + y,
                     cx, cy, x, y);
@@ -65,14 +67,17 @@ public class CircPolinomial {
     }
 
     // <-------------------SIMETRIAS E TRANSLAÇÃO DO CENTRO------------------->
-    /** oito simetrias, transladadas pelo centro informado. */
+    /** Espelha o deslocamento (x,y) em relação ao centro (cx,cy). */
     private static void ponto_circulo(ResultadoRasterizacao registro, String etapa,
                                       String conta, int cx, int cy, int x, int y) {
-        registro.registrar(etapa, conta + "; aplicar ao centro (" + cx + "," + cy + ") as oito simetrias de (" + x + "," + y + ")",
-                cx + x, cy + y, cx + y, cy + x, cx + y, cy - x, cx + x, cy - y,
-                cx - x, cy - y, cx - y, cy - x, cx - y, cy + x, cx - x, cy + y);
+
+        // Nos eixos, alguns pares coincidem; o registro agrupa essas repetições.
+        registro.registrar(etapa, conta + "; centro=(" + cx + "," + cy
+                        + "), quatro simetrias de (" + x + "," + y + ")",
+                cx + x, cy + y, // Direita e acima do centro.
+                cx + x, cy - y, // Direita e abaixo do centro.
+                cx - x, cy - y, // Esquerda e abaixo do centro.
+                cx - x, cy + y  // Esquerda e acima do centro.
+        );
     }
-
 }
-
-
