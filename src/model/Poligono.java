@@ -54,7 +54,7 @@ public final class Poligono {
      * Devolve uma cópia dos vértices, sem expor o estado interno.
      *
      * @author Suelle Ferreira Maciel
-     * @date
+     * @date 02/11/2006
      * @return cópia ou resultado dos vértices homogêneos em colunas
      */
     public double[][] getPontos() { return MatrizUtils.copiar(pontos); }
