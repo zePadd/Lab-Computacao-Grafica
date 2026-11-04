@@ -19,17 +19,11 @@ public final class TestesLab3 {
 
     /**
      * Impede instâncias da suíte.
-     *
-     * @author Gabriela Almeida de Andrade
-     * @date 03/11/2026
      */
     private TestesLab3() {}
 
     /**
      * Executa testes matemáticos e de interface; a pasta opcional recebe capturas PNG.
-     *
-     * @author Gabriela Almeida de Andrade
-     * @date 03/11/2026
      * @param args argumentos da linha de comando
      * @throws Exception se a execução dos testes ou da interface falhar
      */
@@ -41,9 +35,6 @@ public final class TestesLab3 {
 
     /**
      * Compara um escalar com tolerância de ponto flutuante.
-     *
-     * @author Gabriela Almeida de Andrade
-     * @date 03/11/2026
      * @param atual resultado observado
      * @param esperado resultado de referência
      */
@@ -55,9 +46,6 @@ public final class TestesLab3 {
 
     /**
      * Compara matrizes elemento a elemento.
-     *
-     * @author Gabriela Almeida de Andrade
-     * @date 03/11/2026
      * @param atual resultado observado
      * @param esperado resultado de referência
      */
@@ -68,9 +56,6 @@ public final class TestesLab3 {
 
     /**
      * Exige rejeição de entradas inválidas por IllegalArgumentException.
-     *
-     * @author Gabriela Almeida de Andrade
-     * @date 03/11/2026
      * @param acao operação que deve lançar a exceção esperada
      */
     private static void rejeita(Runnable acao) {
@@ -82,9 +67,6 @@ public final class TestesLab3 {
     // <-------------------ORÁCULOS MATEMÁTICOS INDEPENDENTES------------------->
     /**
      * Verifica exemplos de sala, invariantes, composição não comutativa, singularidades e cópias defensivas.
-     *
-     * @author Gabriela Almeida de Andrade
-     * @date 03/11/2026
      */
     private static void matematica() {
         matriz(MatrizUtils.multiplicar(new double[][]{{1,2,3},{4,5,6}},new double[][]{{7,8},{9,10},{11,12}}),new double[][]{{58,64},{139,154}});
@@ -134,9 +116,6 @@ public final class TestesLab3 {
 
     /**
      * Verifica Ponto Médio em oito oitantes, eixos, ponto degenerado e exemplo numérico da G3.
-     *
-     * @author Gabriela Almeida de Andrade
-     * @date 03/11/2026
      */
     private static void rasterizacao() {
         int[][] destinos={{10,8},{8,10},{-8,10},{-10,8},{-10,-8},{-8,-10},{8,-10},{10,-8},{10,0},{0,10},{0,0}};
@@ -156,9 +135,6 @@ public final class TestesLab3 {
     // <-------------------INTEGRAÇÃO SWING E CAPTURAS------------------->
     /**
      * Procura um controle pelo nome atribuído para acessibilidade e automação.
-     *
-     * @author Gabriela Almeida de Andrade
-     * @date 03/11/2026
      * @param pai contêiner onde a busca começa
      * @param nome nome descritivo da forma ou operação
      * @return componente encontrado ou null
@@ -173,9 +149,6 @@ public final class TestesLab3 {
 
     /**
      * Executa o layout recursivamente para renderizar o painel sem monitor físico.
-     *
-     * @author Gabriela Almeida de Andrade
-     * @date 03/11/2026
      * @param c contêiner cujo layout será calculado
      */
     private static void layout(Container c) {
@@ -184,9 +157,6 @@ public final class TestesLab3 {
 
     /**
      * Testa seleção, aplicação, desfazer e restauração na thread do Swing e exporta capturas opcionais.
-     *
-     * @author Gabriela Almeida de Andrade
-     * @date 03/11/2026
      * @param pasta diretório opcional para salvar capturas
      */
     private static void interfaceGrafica(String pasta) {

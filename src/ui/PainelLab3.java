@@ -38,9 +38,6 @@ public final class PainelLab3 extends JPanel {
 
     /**
      * Monta os controles e associa eventos às operações matemáticas.
-     *
-     * @author Gabriela Almeida de Andradde
-     * @date
      */
     public PainelLab3() {
         super(new BorderLayout(16,12));
@@ -67,9 +64,6 @@ public final class PainelLab3 extends JPanel {
     // <-------------------CONTROLES E PARÂMETROS------------------->
     /**
      * Cria a coluna de operações com controles compactos e ajuda contextual.
-     *
-     * @author Gabriela Almeida de Andradde
-     * @date
      * @return painel lateral com rolagem
      */
     private JComponent controles() {
@@ -121,9 +115,6 @@ public final class PainelLab3 extends JPanel {
 
     /**
      * Ajusta rótulos, valores iniciais e explicação à transformação selecionada.
-     *
-     * @author Gabriela Almeida de Andradde
-     * @date
      */
     private void configurarCampos() {
         String[][] nomes = {{"Tx","Ty"},{"Sx","Sy"},{"Ângulo (graus)"},{},{},{},{},
@@ -149,9 +140,6 @@ public final class PainelLab3 extends JPanel {
 
     /**
      * Lê um parâmetro decimal finito, aceitando vírgula como separador.
-     *
-     * @author Gabriela Almeida de Andradde
-     * @date
      * @param indice índice do campo de entrada
      * @return parâmetro convertido para double
      * @throws IllegalArgumentException se os parâmetros violarem as condições descritas
@@ -167,9 +155,6 @@ public final class PainelLab3 extends JPanel {
     // <-------------------EXECUÇÃO E INSPEÇÃO MATRICIAL------------------->
     /**
      * Constrói as etapas na ordem de aplicação, preservando a formulação homogênea dos slides.
-     *
-     * @author Gabriela Almeida de Andradde
-     * @date
      * @return matrizes da operação selecionada na ordem de aplicação
      */
     private double[][][] etapas() {
@@ -198,9 +183,6 @@ public final class PainelLab3 extends JPanel {
 
     /**
      * Aplica uma operação validada e registra matrizes, pontos intermediários e ordem da composição.
-     *
-     * @author Gabriela Almeida de Andradde
-     * @date
      */
     private void aplicar() {
         try {
@@ -232,9 +214,6 @@ public final class PainelLab3 extends JPanel {
 
     /**
      * Atualiza a inspeção e o canvas a partir do mesmo estado matemático.
-     *
-     * @author Gabriela Almeida de Andradde
-     * @date
      */
     private void atualizar() {
         List<String> nomes = estado.getHistorico();
@@ -260,9 +239,6 @@ public final class PainelLab3 extends JPanel {
 
     /**
      * Formata matrizes somente para leitura, sem alterar os valores usados nas contas.
-     *
-     * @author Gabriela Almeida de Andradde
-     * @date
      * @param a matriz à esquerda
      * @return representação textual da matriz
      */
@@ -278,9 +254,6 @@ public final class PainelLab3 extends JPanel {
 
     /**
      * Cria uma área de inspeção monoespaçada e não editável.
-     *
-     * @author Gabriela Almeida de Andradde
-     * @date
      * @return área de texto configurada
      */
     private static JTextArea area() {
