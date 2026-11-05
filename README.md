@@ -117,6 +117,114 @@ javac MainLab2.java
 java MainLab2
 ```
 
+## Laboratório 3 — Transformações geométricas 2D
+
+Entrega independente, compatível com Java 11 ou superior, sem dependências externas.
+Inclui os fontes originais dos Labs 1 e 2 e um módulo novo executado por `MainLab3`.
+O repositório original não foi editado. Nenhuma branch ou commit foi criado automaticamente.
+Branch definida pela equipe: `feature/lab3-transformacoes-2d`.
+
+### Executar e testar
+
+Abra o terminal **na raiz desta entrega**, onde estão `src`, `tests` e este README.
+
+```sh
+javac --release 11 -encoding UTF-8 -d out -sourcepath src src/MainLab1.java src/MainLab2.java src/MainLab3.java tests/TestesLab3.java
+java -cp out MainLab3
+```
+
+O mesmo comando funciona no PowerShell e no terminal do Linux. É necessário um **JDK**, não apenas o JRE.
+No Linux, também é possível usar `bash executar-lab3.sh`.
+Para os testes (não precisam de monitor):
+
+```sh
+java -Djava.awt.headless=true -cp out TestesLab3
+```
+
+Para gerar capturas do painel Swing junto com os testes:
+
+```sh
+java -Djava.awt.headless=true -cp out TestesLab3 docs/capturas
+```
+
+Labs anteriores: `java -cp out MainLab1` ou `java -cp out MainLab2`.
+A documentação histórica foi preservada em [README-Labs1e2](docs/README-Labs1e2.md).
+
+### Uso da interface
+
+1. Escolha triângulo equilátero, quadrado ou seta côncava. O vértice **A começa em (0,0)**.
+2. Escolha uma transformação e preencha os parâmetros. Aceita vírgula ou ponto decimal.
+3. Clique em **Aplicar transformação**. Cada aplicação age sobre o resultado atual.
+4. Consulte **Matrizes e etapas**, **Vértices** e **Composição / histórico**.
+5. Use **Desfazer** para retirar a última operação ou **Restaurar** para voltar à forma inicial.
+6. Desmarque **Mostrar cálculos** para ampliar o canvas. A divisória também pode ser arrastada.
+
+O polígono atual é verde petróleo e o original é cinza. A origem permanece no centro do canvas,
+com X para a direita e Y para cima. O enquadramento uniforme é automático para manter a forma visível.
+Esse ajuste é somente de exibição: não altera coordenadas nem a composição do objeto.
+Uma ampliação grande pode reduzir a quantidade de pixels por unidade; confira os eixos e os vértices
+para avaliar a escala matemática. A troca de polígono reinicia o histórico.
+
+### Convenção matemática e fidelidade às aulas
+
+Cada vértice é uma coluna `(x,y,1)`. O polígono forma uma matriz `P` de dimensão `3 x N`.
+Todas as operações usam `P' = M * P`, calculado pelo laço explícito de `MatrizUtils.multiplicar`.
+Ao aplicar M1 e depois M2, a composição é `C = M2 * M1`. Uma nova operação atualiza `C = M * C`.
+Os vértices atuais são recalculados a partir do original: `P atual = C * P original`.
+
+| Operação                   | Matriz homogênea, escrita por linhas     |
+| -------------------------- | ---------------------------------------- |
+| Translação                 | `[1,0,tx]; [0,1,ty]; [0,0,1]`            |
+| Escala                     | `[sx,0,0]; [0,sy,0]; [0,0,1]`            |
+| Rotação                    | `[cosθ,-senθ,0]; [senθ,cosθ,0]; [0,0,1]` |
+| Reflexão em X              | `[1,0,0]; [0,-1,0]; [0,0,1]`             |
+| Reflexão em Y              | `[-1,0,0]; [0,1,0]; [0,0,1]`             |
+| Reflexão na origem         | `[-1,0,0]; [0,-1,0]; [0,0,1]`            |
+| Reflexão em y=x            | `[0,1,0]; [1,0,0]; [0,0,1]`              |
+| Cisalhamento simultâneo XY | `[1,a,0]; [b,1,0]; [0,0,1]`              |
+
+- Cisalhamento somente em X: `b=0`. Somente em Y: `a=0`.
+- XY simultâneo usa as coordenadas anteriores em ambas as equações. Não equivale em geral ao produto dos dois cisalhamentos simples.
+- Escala/rotação com pivô F: `T(F) * M * T(-F)`.
+- Reflexão em `y=m*x+b`: `T(0,b) * R(α) * Fx * R(-α) * T(0,-b)`, com `α=atan(m)`.
+  As cinco etapas e seus vértices intermediários aparecem nos cálculos. A forma `y=mx+b` não representa retas verticais.
+- Rotação positiva é anti-horária. Só a reflexão **na origem** equivale à rotação de 180° no plano.
+- Escalas zero e negativas são aceitas. Escala zero pode reduzir a forma a segmento ou ponto; desfazer continua funcionando.
+
+Aula G3, slides 16–28: arestas por Ponto Médio, `d=2dy-dx`, `incE=2dy`, `incNE=2(dy-dx)`,
+com a extensão aos oito oitantes já presente no Lab2. O empate segue o pseudocódigo do slide 26 (`d<=0`).
+Cada aresta, inclusive a última ligada à primeira, passa por `AlgoritmoBresenham.bresenham`.
+As primitivas `drawLine` do canvas servem somente para grade e eixos. As arestas são pixels de um framebuffer.
+
+Aula G5, slides 6–28: transformações básicas, coordenadas homogêneas, reflexões,
+cisalhamento e composições com ponto fixo. As anotações de sala complementam o cisalhamento XY e a
+reflexão em reta arbitrária, implementada com as mesmas matrizes básicas.
+Janela/viewport como assunto didático, Gato de Arnold e Cohen–Sutherland ficaram fora do escopo acordado.
+
+### Arquitetura
+
+| Arquivo novo                   | Responsabilidade                                                                |
+| ------------------------------ | ------------------------------------------------------------------------------- |
+| `transformer/MatrizUtils`      | Validação, cópia, identidade e multiplicação explícita de matrizes retangulares |
+| `model/Poligono`               | Formas iniciais imutáveis, com vértices em colunas                              |
+| `transformer/Transformacoes2D` | Construção das matrizes e composição ordenada                                   |
+| `model/EstadoTransformacoes`   | Histórico, limites, aplicação, desfazer e restauração                           |
+| `ui/CanvasTransformacoes`      | Eixos, grade, enquadramento visual e rasterização das arestas                   |
+| `ui/PainelLab3`                | Controles, parâmetros e inspeção das contas                                     |
+| `MainLab3`                     | Tema Nimbus do JDK e criação da janela Swing                                    |
+| `tests/TestesLab3`             | Testes matemáticos, rasterização e integração dos controles                     |
+
+Dependências reaproveitadas sem alterações: `AlgoritmoBresenham`, `ResultadoRasterizacao`,
+`PixelRenderer` e seus fontes relacionados. Os comentários originais foram preservados.
+
+### Precisão e limites
+
+Cálculos usam `double`. Arredondamento para inteiros ocorre apenas ao rasterizar, após converter para
+pixels do canvas. As tabelas arredondam somente o texto de apresentação.
+Parâmetros e coordenadas finais ficam entre -10.000 e 10.000, com no máximo 100 operações no histórico.
+Entradas não finitas são rejeitadas. Uma operação inválida não altera o estado.
+O ajuste visual limita os percursos rasterizados para respeitar o limite do algoritmo já existente.
+
 ## Integrantes da equipe
 
 - Gabriela Almeida de Andradde
