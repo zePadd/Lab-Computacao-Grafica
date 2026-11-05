@@ -20,9 +20,9 @@ public final class PainelLab3 extends JPanel {
     private final CanvasTransformacoes canvas = new CanvasTransformacoes(estado);
     private final JComboBox<String> forma = new JComboBox<>(new String[] {"Triângulo equilátero", "Quadrado", "Seta côncava"});
     private final JComboBox<String> operacao = new JComboBox<>(new String[] {
-        "Translação", "Escala na origem", "Rotação na origem", "Reflexão em X", "Reflexão em Y",
-        "Reflexão na origem", "Reflexão em y = x", "Cisalhamento em X", "Cisalhamento em Y",
-        "Cisalhamento simultâneo XY", "Escala com ponto fixo", "Rotação com ponto fixo", "Reflexão em y = mx + b"});
+            "Translação", "Escala na origem", "Rotação na origem", "Reflexão em X", "Reflexão em Y",
+            "Reflexão na origem", "Reflexão em y = x", "Cisalhamento em X", "Cisalhamento em Y",
+            "Cisalhamento simultâneo XY", "Escala com ponto fixo", "Rotação com ponto fixo", "Reflexão em y = mx + b"});
     private final JPanel entradas = new JPanel(new GridLayout(0,2,8,10));
     private final JTextField[] campos = {new JTextField(),new JTextField(),new JTextField(),new JTextField()};
     private final JLabel[] rotulos = {new JLabel(),new JLabel(),new JLabel(),new JLabel()};
@@ -76,6 +76,11 @@ public final class PainelLab3 extends JPanel {
         for (int i = 0; i < 4; i++) {
             entradas.add(rotulos[i]); entradas.add(campos[i]); campos[i].setName("parametro"+i);
             rotulos[i].setLabelFor(campos[i]); campos[i].addActionListener(evento -> aplicar());
+            campos[i].getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
+                public void insertUpdate(javax.swing.event.DocumentEvent e) { atualizarReta(); }
+                public void removeUpdate(javax.swing.event.DocumentEvent e) { atualizarReta(); }
+                public void changedUpdate(javax.swing.event.DocumentEvent e) { atualizarReta(); }
+            });
         }
         entradas.setMaximumSize(new Dimension(Integer.MAX_VALUE,160));
         lateral.add(Box.createVerticalStrut(18)); lateral.add(entradas);
@@ -118,10 +123,10 @@ public final class PainelLab3 extends JPanel {
      */
     private void configurarCampos() {
         String[][] nomes = {{"Tx","Ty"},{"Sx","Sy"},{"Ângulo (graus)"},{},{},{},{},
-            {"a (X)"},{"b (Y)"},{"a (X)","b (Y)"},{"Sx","Sy","Pivô X","Pivô Y"},
-            {"Ângulo (graus)","Pivô X","Pivô Y"},{"m (inclinação)","b (intercepto)"}};
+                {"a (X)"},{"b (Y)"},{"a (X)","b (Y)"},{"Sx","Sy","Pivô X","Pivô Y"},
+                {"Ângulo (graus)","Pivô X","Pivô Y"},{"m (inclinação)","b (intercepto)"}};
         String[][] valores = {{"1","1"},{"2","2"},{"90"},{},{},{},{},{"1"},{"1"},{"0.5","1"},
-            {"2","2","2","1"},{"90","2","1"},{"1","1"}};
+                {"2","2","2","1"},{"90","2","1"},{"1","1"}};
         int tipo = operacao.getSelectedIndex();
         entradas.removeAll();
         for (int i = 0; i < 4; i++) {
@@ -136,6 +141,22 @@ public final class PainelLab3 extends JPanel {
         if (tipo == 9) texto += "\n\nXY simultâneo usa [[1,a],[b,1]]. Difere de aplicar X e depois Y.";
         if (tipo >= 10) texto += "\n\nAs etapas e matrizes da composição aparecem na aba de cálculos.";
         ajuda.setText(texto);
+        atualizarReta();
+    }
+
+    /**
+     * Mostra no canvas a reta de reflexão quando a operação é y = x ou y = mx + b; nas demais, oculta.
+     * Para y = mx + b a reta acompanha os valores digitados em m e b, antes mesmo de aplicar.
+     */
+    private void atualizarReta() {
+        int tipo = operacao.getSelectedIndex();
+        if (tipo == 6) { canvas.mostrarReta(1,0); return; }
+        if (tipo == 12) {
+            try { canvas.mostrarReta(numero(0),numero(1)); }
+            catch (IllegalArgumentException erro) { canvas.ocultarReta(); }
+            return;
+        }
+        canvas.ocultarReta();
     }
 
     /**
@@ -222,7 +243,7 @@ public final class PainelLab3 extends JPanel {
         double[][] antes = estado.getOriginal(), depois = estado.getPontos();
         StringBuilder tabela = new StringBuilder("Vértice       Original (x ; y)             Atual (x ; y)\n\n");
         for (int i = 0; i < antes[0].length; i++) tabela.append(String.format(Locale.ROOT,
-            "%c        (%9.4f ; %9.4f)     (%9.4f ; %9.4f)%n",'A'+i,antes[0][i],antes[1][i],depois[0][i],depois[1][i]));
+                "%c        (%9.4f ; %9.4f)     (%9.4f ; %9.4f)%n",'A'+i,antes[0][i],antes[1][i],depois[0][i],depois[1][i]));
         vertices.setText(tabela+"\nValores exibidos arredondados; cálculos preservam double.\nCada coluna de P representa um vértice (x,y,1).");
         StringBuilder lista = new StringBuilder("ORDEM DE APLICAÇÃO\n\n");
         for (int i = 0; i < nomes.size(); i++) lista.append("M").append(i+1).append(": ").append(nomes.get(i)).append('\n');

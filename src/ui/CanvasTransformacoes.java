@@ -20,8 +20,10 @@ public final class CanvasTransformacoes extends JPanel {
     private final EstadoTransformacoes estado;
     private boolean originalVisivel = true;
     private double unidade = 45;
+    private Double retaM, retaB; // reta de reflexão visível (y = m*x + b); null quando não há reflexão em reta
     private static final Color ATUAL = new Color(0x007F87);
     private static final Color ORIGINAL = new Color(0xA3ADBA);
+    private static final Color RETA = new Color(0xE8590C);
 
     /**
      * Cria o canvas de transformações e associa o painel ao estado compartilhado da aplicação.
@@ -51,6 +53,56 @@ public final class CanvasTransformacoes extends JPanel {
      */
     public void mostrarOriginal(boolean mostrar) { originalVisivel = mostrar; repaint(); }
 
+    /**
+     * Exibe a reta y = m*x + b usada como eixo de reflexão. Para y = x use m = 1 e b = 0.
+     *
+     * @author João Victor Araújo Leite dos Santos
+     * @date 05/11/2026
+     * @param m coeficiente angular da reta
+     * @param b intercepto da reta no eixo Y
+     */
+    public void mostrarReta(double m, double b) {
+        retaM = m; retaB = b; repaint();
+    }
+
+    /**
+     * Oculta a reta de reflexão.
+     *
+     * @author João Victor Araújo Leite dos Santos
+     * @date 05/11/2026
+     */
+    public void ocultarReta() { retaM = null; retaB = null; repaint(); }
+
+    /**
+     * Monta o texto da equação da reta, por exemplo "y = x", "y = -0.5x + 2" ou "y = 3".
+     *
+     * @author João Victor Araújo Leite dos Santos
+     * @date 05/11/2026
+     * @param m coeficiente angular da reta
+     * @param b intercepto da reta no eixo Y
+     * @return equação formatada
+     */
+    private static String equacao(double m, double b) {
+        java.util.function.DoubleFunction<String> f = v -> {
+            String t = String.format(java.util.Locale.ROOT,"%.4f",Math.abs(v));
+            t = t.replaceAll("0+$","").replaceAll("\\.$","");
+            return t;
+        };
+        StringBuilder t = new StringBuilder("y = ");
+        boolean temX = Math.abs(m) >= 0.00005, temB = Math.abs(b) >= 0.00005;
+        if (temX) {
+            if (m < 0) t.append('-');
+            if (Math.abs(Math.abs(m)-1) >= 0.00005) t.append(f.apply(m));
+            t.append('x');
+        }
+        if (temB) {
+            if (temX) t.append(b < 0 ? " - " : " + "); else if (b < 0) t.append('-');
+            t.append(f.apply(b));
+        }
+        if (!temX && !temB) t.append('0');
+        return t.toString();
+    }
+
     // <-------------------RASTERIZAÇÃO DAS ARESTAS------------------->
     /**
      * Rasteriza uma forma fechada a partir de uma matriz de pontos no sistema cartesiano.
@@ -71,6 +123,44 @@ public final class CanvasTransformacoes extends JPanel {
                     (int)Math.round(p[0][i]*unidade), (int)Math.round(p[1][i]*unidade),
                     (int)Math.round(p[0][j]*unidade), (int)Math.round(p[1][j]*unidade), cor, true);
         }
+    }
+
+    /**
+     * Traça a reta de reflexão atravessando todo o plano visível, tracejada e com a equação ao lado.
+     *
+     * @author João Victor Araújo Leite dos Santos
+     * @date 05/11/2026
+     * @param tela contexto gráfico em uso
+     * @param largura largura do canvas em pixels
+     * @param altura altura do canvas em pixels
+     * @param cx coluna do pixel que corresponde à origem
+     * @param cy linha do pixel que corresponde à origem
+     */
+    private void desenharReta(Graphics2D tela, int largura, int altura, int cx, int cy) {
+        double m = retaM, b = retaB;
+        Graphics2D g2 = (Graphics2D)tela.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(RETA);
+        g2.setStroke(new BasicStroke(2f,BasicStroke.CAP_BUTT,BasicStroke.JOIN_MITER,10f,new float[] {9f,6f},0f));
+        // Duas extremidades fora da tela: y = m*x + b convertido para pixels (Y da tela cresce para baixo).
+        double x1 = -largura, x2 = 2.0*largura;
+        double y1 = cy-(m*((x1-cx)/unidade)+b)*unidade, y2 = cy-(m*((x2-cx)/unidade)+b)*unidade;
+        g2.draw(new java.awt.geom.Line2D.Double(x1,y1,x2,y2));
+        // Legenda: primeiro ponto visível da reta, partindo da borda direita.
+        g2.setStroke(new BasicStroke(1f));
+        g2.setFont(getFont().deriveFont(Font.BOLD,13f));
+        String texto = equacao(m,b);
+        int larguraTexto = g2.getFontMetrics().stringWidth(texto);
+        for (int px = largura-10; px > larguraTexto+10; px -= 2) {
+            double py = cy-(m*((px-cx)/unidade)+b)*unidade;
+            if (py > 24 && py < altura-48) {
+                int tx = px-larguraTexto, ty = (int)Math.round(py)-10;
+                g2.setColor(new Color(0xF8FAFD)); g2.fillRect(tx-3,ty-13,larguraTexto+6,18); // fundo para a reta não riscar o texto
+                g2.setColor(RETA); g2.drawString(texto,tx,ty);
+                break;
+            }
+        }
+        g2.dispose();
     }
 
     /**
@@ -119,6 +209,7 @@ public final class CanvasTransformacoes extends JPanel {
         }
         tela.setColor(new Color(0x7B8AA0)); tela.drawLine(0,cy,largura,cy); tela.drawLine(cx,0,cx,altura);
         tela.drawString("0",cx-13,cy+16); tela.drawString("X",largura-20,cy-8); tela.drawString("Y",cx+8,20);
+        if (retaM != null) desenharReta(tela,largura,altura,cx,cy);
         tela.drawImage(imagem,0,0,null);
         tela.setColor(ATUAL); tela.setFont(getFont().deriveFont(Font.BOLD,13f));
         for (int i = 0; i < atual[0].length; i++) {
@@ -126,7 +217,7 @@ public final class CanvasTransformacoes extends JPanel {
             tela.drawString(String.valueOf((char)('A'+i)),x+6,y-7);
         }
         tela.setColor(new Color(0x46566D));
-        tela.drawString("ATUAL: verde petróleo   |   ORIGINAL: cinza",16,altura-34);
+        tela.drawString("ATUAL: verde petróleo   |   ORIGINAL: cinza"+(retaM != null?"   |   RETA DE REFLEXÃO: laranja":""),16,altura-34);
         tela.setFont(getFont().deriveFont(11f));
         tela.drawString("Enquadramento automático • origem fixa no centro • arestas por Ponto Médio",16,altura-15);
         tela.dispose();
