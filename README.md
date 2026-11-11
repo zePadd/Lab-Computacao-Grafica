@@ -17,6 +17,15 @@ Esse projeto visa aplicar os conceitos da disciplina Computação Gráfica estud
 > **Antes de rodar no Windows, ajuste a escala para 100%:** `Configurações → Sistema → Tela → Escala = 100%`.
 >
 
+## Integrantes da equipe
+
+- Gabriela Almeida de Andradde
+- Georis Samuel Martins Gouveia
+- Horlan Silva de Lacerda
+- João Victor Araújo Leite dos Santos
+- José Araújo Agra Neto
+- Suelle Ferreira Maciel
+
 ## Laboratório 1 - Transformações de Coordenadas
 
 Implementa o pipeline `Mundo → NDC → Dispositivo` visto na Aula G2 e acende, na tela real do computador (notebook ou desktop do laboratório), o pixel exato correspondente a um ponto de mundo informado pelo usuário, nos dois cenários de NDC exigidos pelo enunciado: `[0,1] x [0,1]` e `[-1,1] x [-1,1]`.
@@ -30,7 +39,16 @@ O programa segue estes passos:
 5. Abre uma janela em tela cheia, com fundo preto, e acende **um único pixel verde (0x00FF00)** exatamente na posição calculada, usando `BufferedImage.setRGB` (por dentro de `PixelRenderer.drawPixel`), sem representar o ponto como círculo, retângulo ou qualquer outra forma com mais de um pixel.
 6. Pergunta se o usuário quer visualizar também o outro cenário de NDC, para comparação.
 
-## Estrutura de arquivos e responsáveis
+## Como compilar e rodar o Lab1
+
+O projeto usa pacotes (`model`, `transformer`, `ui`), então a estrutura de pastas dentro de `src` importa: `MainLab1.java` fica solto na raiz, e cada classe fica dentro da pasta que dá nome ao seu pacote. Com o JDK instalado (11 ou superior), rode a partir da pasta `src`:
+
+```bash
+javac MainLab1.java
+java MainLab1
+```
+
+### Estrutura de arquivos e responsáveis pelo Lab1
 
 |        Classe         |  Responsável     | Pacote        | O que faz                                                               |
 | ----------------------| ---------------- | ------------- | ----------------------------------------------------------------------- |
@@ -45,20 +63,11 @@ O programa segue estes passos:
 |     `MainLab1.java`   |  **João Victor** | (padrão)      | Integra tudo: entrada → transformação → exibição                        |
 |     `README.md`       |  **João Victor** | —             | Este arquivo                                                            |
 
-## Como compilar e rodar
-
-O projeto usa pacotes (`model`, `transformer`, `ui`), então a estrutura de pastas dentro de `src` importa: `MainLab1.java` fica solto na raiz, e cada classe fica dentro da pasta que dá nome ao seu pacote. Com o JDK instalado (11 ou superior), rode a partir da pasta `src`:
-
-```bash
-javac MainLab1.java
-java MainLab1
-```
-
 (`javac MainLab1.java` já compila `model`, `transformer` e `ui` automaticamente, por causa dos imports. Se preferir compilar tudo explicitamente: `javac -d out $(find . -name "*.java")` e depois `java -cp out MainLab1`.)
 
 O programa vai abrir caixas de diálogo pedindo os dados e, no final, ocupar a tela inteira para mostrar o pixel.
 
-## Como cada requisito do enunciado foi atendido
+### Como cada requisito do enunciado foi atendido no Lab1
 
 - **Requisito 1** (janela do mundo definida pelo usuário): `UserInputReader.lerJanelaDeMundo()`.
 - **Requisito 2** (dois cenários de NDC): `NdcScenario` + `MainLab1` calcula os dois cenários para o mesmo ponto.
@@ -71,7 +80,16 @@ O objetivo principal deste laboratório é a **rasterização de retas e circunf
 
 Nesse laboratório, foi adicionada uma interface gráfica interativa (Swing) que permite ao usuário escolher o algoritmo, inserir os dados de entrada (coordenadas e raio), visualizar a forma gerada sobre uma malha quadriculada com eixos cartesianos e, mais importante, acompanhar o registro passo a passo dos cálculos e decisões matemáticas feitas pelo algoritmo quadro a quadro.
 
-## Funcionalidades
+### Como compilar e rodar o Lab2
+
+Com o terminal na pasta `src` execute no seu terminal:
+
+```bash
+javac MainLab2.java
+java MainLab2
+```
+
+### Funcionalidades
 
 Através da interface gráfica, o projeto permite:
 
@@ -93,7 +111,7 @@ Através da interface gráfica, o projeto permite:
 
 *Nota: Todos os algoritmos de circunferência utilizam a propriedade da **simetria de ordem 8**, calculando apenas $1/8$ do círculo e espelhando os pontos para economizar processamento.*
 
-## Estrutura de arquivos e responsáveis
+### Estrutura de arquivos e responsáveis pelo Lab2
 
 Para atender aos requisitos do segundo laboratório, foram implementadas as seguintes classes:
 
@@ -108,23 +126,14 @@ Para atender aos requisitos do segundo laboratório, foram implementadas as segu
 | `JanelaLab2`/`PainelLab2`| **Equipe**       | `ui`         | Componentes da GUI Swing (seleção de algoritmos, campos de entrada e área de renderização customizada)  |
 |     `MainLab2.java`      |  **Equipe**      | `ui`         | Ponto de entrada do Lab 2: inicia a interface gráfica e integra os algoritmos ao visualizador           |
 
-## Como compilar e rodar
-
-Com o terminal na pasta `src` execute no seu terminal:
-
-```bash
-javac MainLab2.java
-java MainLab2
-```
-
 ## Laboratório 3 — Transformações geométricas 2D
 
 Entrega independente, compatível com Java 11 ou superior, sem dependências externas.
-Inclui os fontes originais dos Labs 1 e 2 e um módulo novo executado por `MainLab3`.
+Inclui os códigos fontes originais dos Labs 1 e 2 e um módulo novo executado por `MainLab3`.
 O repositório original não foi editado. Nenhuma branch ou commit foi criado automaticamente.
 Branch definida pela equipe: `feature/lab3-transformacoes-2d`.
 
-### Executar e testar
+### Como compilar e rodar o Lab3
 
 Abra o terminal **na raiz desta entrega**, onde estão `src`, `tests` e este README.
 
@@ -152,25 +161,22 @@ A documentação histórica foi preservada em [README-Labs1e2](docs/README-Labs1
 
 ### Uso da interface
 
-1. Escolha triângulo equilátero, quadrado ou seta côncava. O vértice **A começa em (0,0)**.
-2. Escolha uma transformação e preencha os parâmetros. Aceita vírgula ou ponto decimal.
-3. Clique em **Aplicar transformação**. Cada aplicação age sobre o resultado atual.
-4. Consulte **Matrizes e etapas**, **Vértices** e **Composição / histórico**.
+1. Na aba a direita, é possível escolher o polígono que será desenhada no mundo. Estão disponíveis para a escolha: um triângulo equilátero, um quadrado e uma seta côncava. O vértice **A** começa em **(0,0)** e os demais vértices se posicionam em relação a tal.
+2. Logo abaixo, é possível escolher a transformação que será aplicada e os parâmetros para aplicar na transformação. São aceitos vírgula ou ponto decimal.
+3. Clique em **Aplicar transformação**. Cada aplicação age sobre o estado atual do polígono.
+4. Consulte **Matrizes e etapas** para visualizar as matrizes utilizadas nos cálculos das transformações; **Vértices** para visualizar os pontos cartesianos **(X, Y)** de cada um dos vértices da forma; **Composição / histórico** para visualizar o histórico de transformações feitas na forma desde a sua ciração inicial.
 5. Use **Desfazer** para retirar a última operação ou **Restaurar** para voltar à forma inicial.
-6. Desmarque **Mostrar cálculos** para ampliar o canvas. A divisória também pode ser arrastada.
+6. Você pode desmarcar **Mostrar cálculos** para ampliar o canvas. A divisória da aba também pode ser arrastada para cima ou para baixo.
 
-O polígono atual é verde petróleo e o original é cinza. A origem permanece no centro do canvas,
-com X para a direita e Y para cima. O enquadramento uniforme é automático para manter a forma visível.
-Esse ajuste é somente de exibição: não altera coordenadas nem a composição do objeto.
-Uma ampliação grande pode reduzir a quantidade de pixels por unidade; confira os eixos e os vértices
-para avaliar a escala matemática. A troca de polígono reinicia o histórico.
+O polígono atual é verde petróleo e o original é cinza. A origem permanece no centro do canvas, com X para a direita e Y para cima. O enquadramento uniforme é automático para manter a forma visível.
+Esse ajuste é somente de exibição, isto é, não altera coordenadas nem a composição do objeto. Uma ampliação grande pode reduzir a quantidade de pixels por unidade devido ao zoom; confira os eixos e os vértices para avaliar a escala matemática. A troca de polígono reinicia o histórico.
 
 ### Convenção matemática e fidelidade às aulas
 
-Cada vértice é uma coluna `(x,y,1)`. O polígono forma uma matriz `P` de dimensão `3 x N`.
-Todas as operações usam `P' = M * P`, calculado pelo laço explícito de `MatrizUtils.multiplicar`.
-Ao aplicar M1 e depois M2, a composição é `C = M2 * M1`. Uma nova operação atualiza `C = M * C`.
-Os vértices atuais são recalculados a partir do original: `P atual = C * P original`.
+- Cada vértice é uma coluna `(x,y,1)`. O polígono forma uma matriz `P` de dimensão `3 x N`.
+- Todas as operações usam `P' = M * P`, calculado pelo laço explícito de `MatrizUtils.multiplicar`.
+- Ao aplicar M1 e depois M2, a composição é `C = M2 * M1`. Uma nova operação atualiza `C = M * C`.
+- Os vértices atuais são recalculados a partir do original: `P atual = C * P original`.
 
 | Operação                   | Matriz homogênea, escrita por linhas     |
 | -------------------------- | ---------------------------------------- |
@@ -201,7 +207,7 @@ cisalhamento e composições com ponto fixo. As anotações de sala complementam
 reflexão em reta arbitrária, implementada com as mesmas matrizes básicas.
 Janela/viewport como assunto didático, Gato de Arnold e Cohen–Sutherland ficaram fora do escopo acordado.
 
-### Arquitetura
+### Estrutura de arquivos e responsáveis pelo Lab3
 
 | Arquivo novo                   | Responsabilidade                                                                |
 | ------------------------------ | ------------------------------------------------------------------------------- |
@@ -214,22 +220,6 @@ Janela/viewport como assunto didático, Gato de Arnold e Cohen–Sutherland fica
 | `MainLab3`                     | Tema Nimbus do JDK e criação da janela Swing                                    |
 | `tests/TestesLab3`             | Testes matemáticos, rasterização e integração dos controles                     |
 
-Dependências reaproveitadas sem alterações: `AlgoritmoBresenham`, `ResultadoRasterizacao`,
-`PixelRenderer` e seus fontes relacionados. Os comentários originais foram preservados.
-
 ### Precisão e limites
 
-Cálculos usam `double`. Arredondamento para inteiros ocorre apenas ao rasterizar, após converter para
-pixels do canvas. As tabelas arredondam somente o texto de apresentação.
-Parâmetros e coordenadas finais ficam entre -10.000 e 10.000, com no máximo 100 operações no histórico.
-Entradas não finitas são rejeitadas. Uma operação inválida não altera o estado.
-O ajuste visual limita os percursos rasterizados para respeitar o limite do algoritmo já existente.
-
-## Integrantes da equipe
-
-- Gabriela Almeida de Andradde
-- Georis Samuel Martins Gouveia
-- Horlan Silva de Lacerda
-- João Victor Araújo Leite dos Santos
-- José Araújo Agra Neto
-- Suelle Ferreira Maciel
+Os cálculos usam `double` e o arredondamento para inteiros ocorre apenas ao rasterizar, após converter para pixels do canvas. As tabelas, no entanto, arredondam somente o texto de apresentação. Os parâmetros e coordenadas finais ficam entre -10.000 e 10.000, com no máximo 100 operações no histórico. Qualquer entrada não finitas será rejeitada. Uma operação inválida não altera o estado.
