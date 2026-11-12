@@ -130,8 +130,6 @@ Para atender aos requisitos do segundo laboratório, foram implementadas as segu
 
 Entrega independente, compatível com Java 11 ou superior, sem dependências externas.
 Inclui os códigos fontes originais dos Labs 1 e 2 e um módulo novo executado por `MainLab3`.
-O repositório original não foi editado. Nenhuma branch ou commit foi criado automaticamente.
-Branch definida pela equipe: `feature/lab3-transformacoes-2d`.
 
 ### Como compilar e rodar o Lab3
 
