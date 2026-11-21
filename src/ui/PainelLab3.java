@@ -1,6 +1,7 @@
 package ui;
 
 import model.EstadoTransformacoes;
+import model.Poligono;
 import transformer.MatrizUtils;
 import transformer.Transformacoes2D;
 import java.awt.*;
@@ -18,7 +19,9 @@ import javax.swing.*;
 public final class PainelLab3 extends JPanel {
     private final EstadoTransformacoes estado = new EstadoTransformacoes();
     private final CanvasTransformacoes canvas = new CanvasTransformacoes(estado);
-    private final JComboBox<String> forma = new JComboBox<>(new String[] {"Triângulo equilátero", "Quadrado", "Seta côncava"});
+    private static final int PERSONALIZADO = 3;
+    private final JComboBox<String> forma = new JComboBox<>(new String[] {
+            "Triângulo equilátero", "Quadrado", "Seta côncava", "Personalizado (definir vértices)"});
     private final JComboBox<String> operacao = new JComboBox<>(new String[] {
             "Translação", "Escala na origem", "Rotação na origem", "Reflexão em X", "Reflexão em Y",
             "Reflexão na origem", "Reflexão em y = x", "Cisalhamento em X", "Cisalhamento em Y",
@@ -33,6 +36,15 @@ public final class PainelLab3 extends JPanel {
     private final JLabel status = new JLabel("Pronto. A = (0,0) na configuração inicial.");
     private final JButton desfazer = new JButton("Desfazer");
     private final List<String> detalhes = new ArrayList<>();
+    private final JPanel personalizado = new JPanel();
+    private final JTextField verticeX = new JTextField(), verticeY = new JTextField();
+    private final DefaultListModel<String> modeloVertices = new DefaultListModel<>();
+    private final JList<String> listaVertices = new JList<>(modeloVertices);
+    private final JButton criarPoligono = new JButton("Criar polígono");
+    private final JButton removerVertice = new JButton("Remover último");
+    private final JButton limparVertices = new JButton("Limpar");
+    private final JLabel avisoVertices = new JLabel();
+    private final List<double[]> verticesPersonalizados = new ArrayList<>();
     private JSplitPane divisao;
     private JTabbedPane inspecao;
 
@@ -56,7 +68,7 @@ public final class PainelLab3 extends JPanel {
         divisao.setResizeWeight(0.78); divisao.setDividerLocation(490); divisao.setContinuousLayout(true);
         add(divisao,BorderLayout.CENTER); add(status,BorderLayout.SOUTH);
         forma.setSelectedIndex(1);
-        forma.addActionListener(evento -> { estado.selecionar(forma.getSelectedIndex()); detalhes.clear(); atualizar(); });
+        forma.addActionListener(evento -> trocarForma());
         operacao.addActionListener(evento -> configurarCampos());
         configurarCampos(); atualizar();
     }
@@ -69,8 +81,9 @@ public final class PainelLab3 extends JPanel {
     private JComponent controles() {
         JPanel lateral = new JPanel(); lateral.setLayout(new BoxLayout(lateral,BoxLayout.Y_AXIS));
         lateral.setBorder(BorderFactory.createEmptyBorder(12,12,12,12));
-        lateral.setPreferredSize(new Dimension(280,600));
         lateral.add(new JLabel("POLÍGONO")); lateral.add(Box.createVerticalStrut(6)); lateral.add(forma);
+        montarPersonalizado();
+        lateral.add(personalizado);
         lateral.add(Box.createVerticalStrut(22)); lateral.add(new JLabel("TRANSFORMAÇÃO"));
         lateral.add(Box.createVerticalStrut(6)); lateral.add(operacao);
         for (int i = 0; i < 4; i++) {
@@ -116,6 +129,180 @@ public final class PainelLab3 extends JPanel {
         rolagem.setBorder(null); rolagem.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         rolagem.setPreferredSize(new Dimension(290,600));
         return rolagem;
+    }
+
+    // <-------------------POLÍGONO DEFINIDO PELO USUÁRIO------------------->
+    /**
+     * Monta o bloco de entrada manual de vértices, visível apenas quando a forma "Personalizado" está selecionada.
+     *
+     * @author Suelle Maciel
+     * @date 20/11/2026
+     */
+    private void montarPersonalizado() {
+        personalizado.setLayout(new BoxLayout(personalizado,BoxLayout.Y_AXIS));
+        personalizado.setName("personalizado"); personalizado.setOpaque(false); personalizado.setVisible(false);
+        // A margem superior fica no proprio componente: escondido, ele nao desloca os controles seguintes.
+        personalizado.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createEmptyBorder(10,0,0,0),
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createMatteBorder(1,1,1,1,new Color(0xC6D2E0)),
+                        BorderFactory.createEmptyBorder(10,10,10,10))));
+        JLabel titulo = new JLabel("VÉRTICES (x ; y)");
+        titulo.setFont(titulo.getFont().deriveFont(Font.BOLD,12f)); titulo.setForeground(new Color(0x46566D));
+        JPanel coordenadas = new JPanel(new GridLayout(0,2,8,8)); coordenadas.setOpaque(false);
+        JLabel rotuloX = new JLabel("X"), rotuloY = new JLabel("Y");
+        rotuloX.setLabelFor(verticeX); rotuloY.setLabelFor(verticeY);
+        verticeX.setName("verticeX"); verticeY.setName("verticeY");
+        verticeX.addActionListener(evento -> verticeY.requestFocusInWindow());
+        verticeY.addActionListener(evento -> adicionarVertice());
+        coordenadas.add(rotuloX); coordenadas.add(verticeX); coordenadas.add(rotuloY); coordenadas.add(verticeY);
+        coordenadas.setMaximumSize(new Dimension(Integer.MAX_VALUE,76));
+        JButton adicionar = new JButton("Adicionar vértice"); adicionar.setName("adicionarVertice");
+        adicionar.addActionListener(evento -> adicionarVertice());
+        listaVertices.setName("listaVertices"); listaVertices.setVisibleRowCount(4);
+        listaVertices.setFont(new Font(Font.MONOSPACED,Font.PLAIN,12));
+        listaVertices.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        JScrollPane rolagemVertices = new JScrollPane(listaVertices);
+        rolagemVertices.setPreferredSize(new Dimension(220,92));
+        rolagemVertices.setMaximumSize(new Dimension(Integer.MAX_VALUE,92));
+        JPanel edicao = new JPanel(new GridLayout(1,2,6,0)); edicao.setOpaque(false);
+        removerVertice.setName("removerVertice"); limparVertices.setName("limparVertices");
+        removerVertice.addActionListener(evento -> {
+            if (!verticesPersonalizados.isEmpty()) verticesPersonalizados.remove(verticesPersonalizados.size()-1);
+            recarregarVertices();
+        });
+        limparVertices.addActionListener(evento -> { verticesPersonalizados.clear(); recarregarVertices(); });
+        edicao.add(removerVertice); edicao.add(limparVertices);
+        edicao.setMaximumSize(new Dimension(Integer.MAX_VALUE,32));
+        criarPoligono.setName("criarPoligono");
+        criarPoligono.setBackground(new Color(0x007F87)); criarPoligono.setForeground(Color.WHITE);
+        criarPoligono.addActionListener(evento -> criarPersonalizado());
+        avisoVertices.setFont(new Font(Font.SANS_SERIF,Font.PLAIN,11)); avisoVertices.setForeground(new Color(0x637187));
+        for (JComponent c : new JComponent[] {adicionar,criarPoligono}) c.setMaximumSize(new Dimension(Integer.MAX_VALUE,34));
+        personalizado.add(titulo); personalizado.add(Box.createVerticalStrut(8)); personalizado.add(coordenadas);
+        personalizado.add(Box.createVerticalStrut(8)); personalizado.add(adicionar);
+        personalizado.add(Box.createVerticalStrut(8)); personalizado.add(rolagemVertices);
+        personalizado.add(Box.createVerticalStrut(6)); personalizado.add(edicao);
+        personalizado.add(Box.createVerticalStrut(10)); personalizado.add(criarPoligono);
+        personalizado.add(Box.createVerticalStrut(6)); personalizado.add(avisoVertices);
+        for (Component filho : personalizado.getComponents())
+            if (filho instanceof JComponent) ((JComponent)filho).setAlignmentX(Component.LEFT_ALIGNMENT);
+        recarregarVertices();
+    }
+
+    /**
+     * Mostra ou esconde a entrada manual e troca a forma em uso conforme a opção escolhida.
+     *
+     * @author Suelle Maciel
+     * @date 20/11/2026
+     */
+    private void trocarForma() {
+        boolean manual = forma.getSelectedIndex() == PERSONALIZADO;
+        personalizado.setVisible(manual);
+        revalidate(); repaint();
+        if (!manual) { estado.selecionar(forma.getSelectedIndex()); detalhes.clear(); atualizar(); return; }
+        if (verticesPersonalizados.size() >= 3) criarPersonalizado();
+        else { verticeX.requestFocusInWindow(); status.setText("Informe ao menos 3 vértices e clique em Criar polígono."); }
+    }
+
+    /**
+     * Lê o par digitado, acrescenta um vértice à lista e devolve o foco ao campo X.
+     *
+     * @author Suelle Maciel
+     * @date 20/11/2026
+     */
+    private void adicionarVertice() {
+        try {
+            double x = coordenada(verticeX,"X"), y = coordenada(verticeY,"Y");
+            verticesPersonalizados.add(new double[] {x,y});
+            verticeX.setText(""); verticeY.setText(""); verticeX.requestFocusInWindow();
+            recarregarVertices();
+            status.setText(verticesPersonalizados.size()+" vértice(s) informado(s). Mínimo de 3 para criar o polígono.");
+        } catch (IllegalArgumentException erro) { avisar(erro.getMessage(),"Confira o vértice"); }
+    }
+
+    /**
+     * Reconstrói a lista exibida, renomeia os vértices em ordem e libera os botões conforme a quantidade.
+     *
+     * @author Suelle Maciel
+     * @date 20/11/2026
+     */
+    private void recarregarVertices() {
+        modeloVertices.clear();
+        for (int i = 0; i < verticesPersonalizados.size(); i++) {
+            double[] v = verticesPersonalizados.get(i);
+            modeloVertices.addElement(String.format(Locale.ROOT,"%c   (%s ; %s)",(char)('A'+i),decimal(v[0]),decimal(v[1])));
+        }
+        int total = verticesPersonalizados.size();
+        criarPoligono.setEnabled(total >= 3);
+        removerVertice.setEnabled(total > 0); limparVertices.setEnabled(total > 0);
+        avisoVertices.setText(total >= 3 ? "<html>" + total + " vértices informados. Arestas na ordem A, B, C...</html>"
+                : "<html>Faltam " + (3-total) + " vértice(s) para o mínimo de 3.</html>");
+    }
+
+    /**
+     * Monta a matriz homogênea 3 x N com os vértices digitados e a entrega ao estado como forma original.
+     *
+     * @author Suelle Maciel
+     * @date 20/11/2026
+     */
+    private void criarPersonalizado() {
+        int total = verticesPersonalizados.size();
+        double[][] pontos = new double[3][total];
+        for (int i = 0; i < total; i++) {
+            pontos[0][i] = verticesPersonalizados.get(i)[0];
+            pontos[1][i] = verticesPersonalizados.get(i)[1];
+            pontos[2][i] = 1;
+        }
+        try {
+            estado.selecionar(new Poligono("Personalizado",pontos));
+            detalhes.clear(); atualizar();
+            status.setText("Polígono personalizado com " + total + " vértices. Histórico reiniciado.");
+        } catch (IllegalArgumentException erro) { avisar(erro.getMessage(),"Confira os vértices"); }
+    }
+
+    /**
+     * Lê uma coordenada decimal finita dentro do limite didático, aceitando vírgula como separador.
+     *
+     * @author Suelle Maciel
+     * @date 20/11/2026
+     * @param campo campo de texto com o valor digitado
+     * @param rotulo nome do eixo exibido em caso de erro
+     * @return coordenada convertida para double
+     * @throws IllegalArgumentException se os parâmetros violarem as condições descritas
+     */
+    private static double coordenada(JTextField campo, String rotulo) {
+        double n;
+        try { n = Double.parseDouble(campo.getText().trim().replace(',','.')); }
+        catch (NumberFormatException erro) { throw new IllegalArgumentException("Informe um número em " + rotulo + "."); }
+        if (!Double.isFinite(n) || Math.abs(n) > 10000) throw new IllegalArgumentException("Coordenadas devem estar entre -10.000 e 10.000.");
+        return n;
+    }
+
+    /**
+     * Escreve um valor sem zeros decimais supérfluos, apenas para leitura na lista de vértices.
+     *
+     * @author Suelle Maciel
+     * @date 20/11/2026
+     * @param v valor a formatar
+     * @return texto compacto do valor
+     */
+    private static String decimal(double v) {
+        String t = String.format(Locale.ROOT,"%.4f",v);
+        return t.contains(".") ? t.replaceAll("0+$","").replaceAll("\\.$","") : t;
+    }
+
+    /**
+     * Informa um problema de entrada na barra de status e em uma caixa de diálogo.
+     *
+     * @author Suelle Maciel
+     * @date 20/11/2026
+     * @param mensagem explicação do problema encontrado
+     * @param titulo título da caixa de diálogo
+     */
+    private void avisar(String mensagem, String titulo) {
+        status.setText("Operação não aplicada: " + mensagem);
+        JOptionPane.showMessageDialog(this,mensagem,titulo,JOptionPane.WARNING_MESSAGE);
     }
 
     /**
@@ -227,10 +414,7 @@ public final class PainelLab3 extends JPanel {
             texto.append("\n").append(formatar(m));
             estado.aplicar(m,nome.toString());
             detalhes.add(texto.toString()); atualizar();
-        } catch (IllegalArgumentException erro) {
-            status.setText("Operação não aplicada: " + erro.getMessage());
-            JOptionPane.showMessageDialog(this,erro.getMessage(),"Confira os parâmetros",JOptionPane.WARNING_MESSAGE);
-        }
+        } catch (IllegalArgumentException erro) { avisar(erro.getMessage(),"Confira os parâmetros"); }
     }
 
     /**
@@ -238,9 +422,11 @@ public final class PainelLab3 extends JPanel {
      */
     private void atualizar() {
         List<String> nomes = estado.getHistorico();
-        String prefixo = detalhes.isEmpty()?"Estado inicial: matriz identidade. A = (0,0).\n":detalhes.get(detalhes.size()-1);
+        double[][] antes = estado.getOriginal();
+        String inicial = "A = ("+decimal(antes[0][0])+" ; "+decimal(antes[1][0])+")";
+        String prefixo = detalhes.isEmpty()?"Estado inicial: matriz identidade. "+inicial+".\n":detalhes.get(detalhes.size()-1);
         contas.setText(prefixo+"\nComposição acumulada C (nova operação multiplica à esquerda):\n"+formatar(estado.getMatriz())+"\nP atual = C · P original\n"+formatar(estado.getPontos()));
-        double[][] antes = estado.getOriginal(), depois = estado.getPontos();
+        double[][] depois = estado.getPontos();
         StringBuilder tabela = new StringBuilder("Vértice       Original (x ; y)             Atual (x ; y)\n\n");
         for (int i = 0; i < antes[0].length; i++) tabela.append(String.format(Locale.ROOT,
                 "%c        (%9.4f ; %9.4f)     (%9.4f ; %9.4f)%n",'A'+i,antes[0][i],antes[1][i],depois[0][i],depois[1][i]));
@@ -254,7 +440,7 @@ public final class PainelLab3 extends JPanel {
         historico.setText(lista.toString());
         contas.setCaretPosition(0); vertices.setCaretPosition(0); historico.setCaretPosition(0);
         desfazer.setEnabled(!nomes.isEmpty());
-        status.setText(nomes.size()+" operação(ões) • Arestas: Ponto Médio • Coordenadas homogêneas • A inicial = (0,0)");
+        status.setText(nomes.size()+" operação(ões) • "+antes[0].length+" vértices • Arestas: Ponto Médio • Coordenadas homogêneas • "+inicial+" na origem do histórico");
         canvas.repaint();
     }
 

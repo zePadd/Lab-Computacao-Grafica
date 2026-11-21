@@ -30,7 +30,20 @@ public final class EstadoTransformacoes {
      * @date
      * @param tipo índice da opção descrita neste método
      */
-    public void selecionar(int tipo) { original = Poligono.criar(tipo); reiniciar(); }
+    public void selecionar(int tipo) { selecionar(Poligono.criar(tipo)); }
+
+    /**
+     * Troca a forma por um polígono qualquer, inclusive definido pelo usuário, e inicia um histórico independente.
+     *
+     * @author José Araújo Agra Neto & Suelle Maciel
+     * @date 20/11/2026
+     * @param p polígono que passa a ser o original da cena
+     * @throws IllegalArgumentException se os parâmetros violarem as condições descritas
+     */
+    public void selecionar(Poligono p) {
+        if (p == null) throw new IllegalArgumentException("Informe um polígono válido.");
+        original = p; reiniciar();
+    }
 
     /**
      * Restaura os vértices originais e limpa o histórico.
